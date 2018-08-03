@@ -42,13 +42,14 @@ try {
 					
 						//객체일때
 						if(isObject) {
-							//자동재생버튼, 재생버튼, 정지버튼, 이전버튼, 다음버튼 정의
+							//자동버튼, 재생버튼, 정지버튼, 이전버튼, 다음버튼 요소정의
 							option.autoArrow = $(option.autoArrow);
 							option.playArrow = $(option.playArrow);
 							option.pauseArrow = $(option.pauseArrow);
 							option.prevArrow = $(option.prevArrow);
 							option.nextArrow = $(option.nextArrow);
-
+							
+							//자동버튼
 							option.autoArrow.off('click.slickExtension').on('click.slickExtension', function(event) {
 								var $this = $(this);
 								
@@ -63,12 +64,14 @@ try {
 								event.preventDefault();
 							});
 							
+							//재생버튼
 							option.playArrow.off('click.slickExtension').on('click.slickExtension', function(event) {
 								option.autoArrow.removeClass('active');
 								$thisFirst.slick('slickPlay');
 								event.preventDefault();
 							});
 							
+							//일시정지 버튼
 							option.pauseArrow.off('click.slickExtension').on('click.slickExtension', function(event) {
 								option.autoArrow.addClass('active');
 								$thisFirst.slick('slickPause');
@@ -76,7 +79,8 @@ try {
 							});
 							
 							//option.pauseAfterClick가 true일때
-							if(option.pauseAfterClick === true) {								
+							if(option.pauseAfterClick === true) {
+								//이전, 재생버튼
 								option.prevArrow.add(option.nextArrow).off('click.slickExtension').on('click.slickExtension', function(event) {
 									$thisFirst.slick('slickPause');
 									option.autoArrow.addClass('active');
