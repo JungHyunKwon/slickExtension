@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+	<title>slickExtension</title>
+	<style>
+		body {margin:0;}
+
+		.list {width:300px;}
+		.list .slide {height:300px;}
+		.list .slide1 {background-color:red;}
+		.list .slide2 {background-color:green;}
+		.list .slide3 {background-color:blue;}
+		
+		.auto {font-size:0;}
+		.auto:before {display:inline; font-size:13px; content:'정지';}
+		.auto.active:before {content:'재생';}
+	</style>
+	<link href="https://rawgit.com/JungHyunKwon/slickCSS/master/slick.css" type="text/css" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script src="https://rawgit.com/kenwheeler/slick/master/slick/slick.min.js"></script>
+	<script src="js/jquery.slick.extension.min.js"></script>
+	<script>
+		$(function() {
+			$('.list').slick({
+				//default
+				prevArrow : $('.prev'),
+				nextArrow : $('.next'),
+				autoplay : true,
+				slidesToShow : 2,
+				swipe : false,
+				responsive : [{
+					breakpoint : 641,
+					settings : {
+						slidesToShow : 1
+					}
+				}],
+
+				//extension
+				autoArrow : $('.auto'),
+				playArrow : $('.play'),
+				pauseArrow : $('.pause'),
+				lowIE : true,
+				pauseAfterClick : true
+			});
+		});
+	</script>
+</head>
+<body>
+<div class="list">
+	<div class="slide slide1">&nbsp;</div>
+	<div class="slide slide2">&nbsp;</div>
+	<div class="slide slide3">&nbsp;</div>
+</div>
+
+<button type="button" class="prev">이전</button>
+<button type="button" class="next">다음</button>
+<button type="button" class="play">재생</button>
+<button type="button" class="pause">정지</button>
+
+<br />
+
+<button type="button" class="auto">&nbsp;</button>
+</body>
+</html>
