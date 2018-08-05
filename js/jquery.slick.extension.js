@@ -32,8 +32,8 @@ try {
 
 					//슬릭이 함수일때
 					if(typeof _slick === 'function') {
-						//ie7, ie8 브라우저이면서 객체이면서 option.lowIE가 false일때
-						if(_isLowIE && isObject && option.lowIE === false) {
+						//ie7, ie8 브라우저이면서 객체이면서 option.lowIE가 거짓일때
+						if(_isLowIE && isObject && !option.lowIE) {
 							delete option.responsive;
 						}
 
@@ -78,8 +78,8 @@ try {
 								event.preventDefault();
 							});
 							
-							//option.pauseAfterClick가 true일때
-							if(option.pauseAfterClick === true) {
+							//option.pauseAfterClick가 참일때
+							if(option.pauseAfterClick) {
 								//이전, 재생버튼
 								option.prevArrow.add(option.nextArrow).off('click.slickExtension').on('click.slickExtension', function(event) {
 									$thisFirst.slick('slickPause');
