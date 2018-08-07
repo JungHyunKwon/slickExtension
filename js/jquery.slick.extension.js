@@ -20,7 +20,7 @@ try {
 			 */
 			$.fn.slick = function(option) {
 				var $thisFirst = this.first(),
-					isObject = option instanceof Object,
+					isObject = option instanceof Object && option.constructor === Object,
 					isString = typeof option === 'string';
 
 				//매개변수가 객체거나 문자거나 없을때
