@@ -5,9 +5,9 @@
 try {
 	'use strict';
 
-	//제이쿼리가 함수일때
-	if(typeof window.jQuery === 'function') {
-		(function($) {
+	(function($) {
+		//제이쿼리가 함수일때
+		if(typeof $ === 'function') {
 			var _slick = $.fn.slick,
 				_userAgent = navigator.userAgent.toLowerCase(),
 				_isLowIE = _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
@@ -98,10 +98,10 @@ try {
 				//요소 반환
 				return this;
 			};
-		})(jQuery);
-	}else{
-		throw '제이쿼리가 없습니다.';
-	}
+		}else{
+			throw '제이쿼리가 없습니다.';
+		}
+	})(window.jQuery);
 }catch(error) {
 	console.error(error);
 }
