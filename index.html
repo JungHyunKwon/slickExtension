@@ -13,10 +13,6 @@
 		.list .slide1 {background-color:red;}
 		.list .slide2 {background-color:green;}
 		.list .slide3 {background-color:blue;}
-		
-		.auto {font-size:0;}
-		.auto:before {display:inline; font-size:13px; content:'정지';}
-		.auto.active:before {content:'재생';}
 	</style>
 	<link href="https://rawgit.com/JungHyunKwon/slickCSS/master/slick.css" type="text/css" rel="stylesheet" />
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -30,7 +26,7 @@
 				nextArrow : $('.next'),
 				autoplay : true,
 				slidesToShow : 2,
-				swipe : false,
+				swipe : true,
 				responsive : [{
 					breakpoint : 641,
 					settings : {
@@ -43,7 +39,9 @@
 				playArrow : $('.play'),
 				pauseArrow : $('.pause'),
 				lowIE : true,
-				pauseAfterClick : true
+				pauseAfterClick : true,
+				pauseText : '정지',
+				playText : '재생'
 			});
 		});
 	</script>

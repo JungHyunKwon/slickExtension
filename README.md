@@ -8,6 +8,8 @@ playArrow | element \|\| jQueryElement | 재생 기능을 수행할 요소를 �
 pauseArrow | element \|\| jQueryElement | 일시정지 기능을 수행할 요소를 지정합니다.
 lowIE | boolean | 인터넷익스플로러7, 8에서 반응형 사용여부 입니다.
 pauseAfterClick | boolean | 이전 또는 다음버튼 클릭 후 일시정지 여부 입니다.
+playText | string | 재생에 대한 문자를 지정합니다.
+pauseText | string | 일시정지에 대한 문자를 지정합니다.
 
 - 슬릭이 셋팅되어 있는 상태에서 재호출 시 오류제거
 - 매개변수에 이상한 값이 올 경우 오류제거

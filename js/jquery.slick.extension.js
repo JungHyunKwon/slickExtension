@@ -15,7 +15,7 @@ try {
 			/**
 			 * @name slickExtension
 			 * @since 2018-08-02
-			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseAfterClick : boolean}
+			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseAfterClick : boolean, playText : string, pauseText : string}
 			 * @return {jqueryElement}
 			 */
 			$.fn.slick = function(option) {
@@ -42,6 +42,8 @@ try {
 					
 						//객체일때
 						if(isObject) {
+							var autuArrowHTML = option.autoArrow.html() || '';
+
 							//자동버튼, 재생버튼, 정지버튼, 이전버튼, 다음버튼 요소정의
 							option.autoArrow = $(option.autoArrow);
 							option.playArrow = $(option.playArrow);
@@ -49,31 +51,51 @@ try {
 							option.prevArrow = $(option.prevArrow);
 							option.nextArrow = $(option.nextArrow);
 							
+							//문자가 아닐때
+							if(typeof option.playText !== 'string') {
+								option.playText = '';
+							}
+
+							//문자가 아닐때
+							if(typeof option.pauseText !== 'string') {
+								option.pauseText = '';
+							}
+
+							//일시정지 상태일때
+							if($thisFirst[0].slick.paused) {
+								$thisFirst.slick('slickPause');
+								option.autoArrow.addClass('active').text(option.playText);
+							}else{
+								$thisFirst.slick('slickPlay');
+								option.autoArrow.removeClass('active').text(option.pauseText);
+							}
+
 							//자동버튼
 							option.autoArrow.off('click.slickExtension').on('click.slickExtension', function(event) {
 								var $this = $(this);
-								
-								//활성화되어 있을때
-								if($this.hasClass('active')) {
+
+								//일시정지 상태일때
+								if($thisFirst[0].slick.paused) {
 									$thisFirst.slick('slickPlay');
+									$this.removeClass('active').text(option.pauseText);
 								}else{
 									$thisFirst.slick('slickPause');
+									$this.addClass('active').text(option.playText);
 								}
-								
-								$this.toggleClass('active');
+
 								event.preventDefault();
 							});
 							
 							//재생버튼
 							option.playArrow.off('click.slickExtension').on('click.slickExtension', function(event) {
-								option.autoArrow.removeClass('active');
+								option.autoArrow.removeClass('active').text(option.pauseText);
 								$thisFirst.slick('slickPlay');
 								event.preventDefault();
 							});
 							
 							//일시정지 버튼
 							option.pauseArrow.off('click.slickExtension').on('click.slickExtension', function(event) {
-								option.autoArrow.addClass('active');
+								option.autoArrow.addClass('active').text(option.playText);
 								$thisFirst.slick('slickPause');
 								event.preventDefault();
 							});
@@ -83,7 +105,7 @@ try {
 								//이전, 재생버튼
 								option.prevArrow.add(option.nextArrow).off('click.slickExtension').on('click.slickExtension', function(event) {
 									$thisFirst.slick('slickPause');
-									option.autoArrow.addClass('active');
+									option.autoArrow.addClass('active').text(option.playText);
 								});
 							}
 
