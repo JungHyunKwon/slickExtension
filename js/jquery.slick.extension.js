@@ -42,8 +42,6 @@ try {
 					
 						//객체일때
 						if(isObject) {
-							var autuArrowHTML = option.autoArrow.html() || '';
-
 							//자동버튼, 재생버튼, 정지버튼, 이전버튼, 다음버튼 요소정의
 							option.autoArrow = $(option.autoArrow);
 							option.playArrow = $(option.playArrow);
@@ -51,6 +49,8 @@ try {
 							option.prevArrow = $(option.prevArrow);
 							option.nextArrow = $(option.nextArrow);
 							
+							var autuArrowHTML = option.autoArrow.html() || '';
+
 							//문자가 아닐때
 							if(typeof option.playText !== 'string') {
 								option.playText = '';
