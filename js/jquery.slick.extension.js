@@ -13,6 +13,50 @@ try {
 				_isLowIE = _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
 
 			/**
+			 * @name 형태얻기
+			 * @since 2017-12-06
+			 * @param {*} value
+			 * @return {string || undefined}
+			 */
+			function _getType(value) {
+				var result;
+				
+				//매개변수가 있을때
+				if(arguments.length) {
+					//null일때
+					if(value === null) {
+						result = 'null';
+					
+					//undefined일때
+					}else if(value === undefined) {
+						result = 'undefined';
+					}else{
+						result = Object.prototype.toString.call(value).toLowerCase().replace('[object ', '').replace(']', '');
+						
+						//Invalid Date일때
+						if(result === 'date' && isNaN(new Date(value))) {
+							result = 'Invalid Date';
+						
+						//숫자일때
+						}else if(result === 'number') {
+							//NaN일때
+							if(isNaN(value)) {
+								result = 'NaN';
+							
+							//Infinity일때
+							}else if(!isFinite(value)) {
+								result = value.toString();
+							}
+						}else if(result === 'console') {
+							result = 'object';
+						}
+					}
+				}
+
+				return result;
+			}
+
+			/**
 			 * @name slickExtension
 			 * @since 2018-08-02
 			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseAfterClick : boolean, playText : string, pauseText : string}
@@ -20,7 +64,7 @@ try {
 			 */
 			$.fn.slick = function(option) {
 				var $thisFirst = this.first(),
-					isObject = option instanceof Object && option.constructor === Object,
+					isObject = _getType(option) === 'object',
 					isString = typeof option === 'string';
 
 				//매개변수가 객체거나 문자거나 없을때
