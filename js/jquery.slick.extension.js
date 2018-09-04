@@ -13,6 +13,82 @@ try {
 				_isLowIE = _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
 
 			/**
+			 * @name 요소 또는 제이쿼리 요소 확인
+			 * @since 2017-12-06
+			 * @param {window || document || element || jQueryElement} element
+			 * @return {boolean}
+			 */
+			function _isElement(element) {
+				var result = false;
+
+				/**
+				 * @name 요소확인
+				 * @since 2017-12-06
+				 * @param {window || document || element} element
+				 * @return {boolean}
+				 */
+				function isElement(element) {
+					var result = false;
+					
+					try {
+						result = document.documentElement.contains(element);
+					}catch(error) {
+						//console.error(error);
+					}
+
+					//window 또는 document일때
+					if(element === window || element === document) {
+						result = true;						
+					}
+
+					return result;
+				}
+
+				/**
+				 * @name 제이쿼리 요소확인
+				 * @since 2017-12-06
+				 * @param {jQueryElement || jQueryObject} element
+				 * @return {boolean}
+				 */
+				function isJQueryElement(element) {
+					var result = false;
+
+					//제이쿼리 객체일때
+					if(element instanceof $) {
+						var elementLength = element.length;
+						
+						result = [];
+
+						for(var i = 0; i < elementLength; i++) {
+							var elementI = element[i];
+
+							if(isElement(elementI)) {
+								result.push(elementI);
+							}
+						}
+
+						var resultLength = result.length;
+
+						//제이쿼리 요소일때
+						if(resultLength && elementLength === resultLength) {
+							result = true;
+						}else{
+							result = false;
+						}
+					}
+
+					return result;
+				}
+				
+				//window 또는 document 또는 요소 또는 제이쿼리 요소일때
+				if(isElement(element) || isJQueryElement(element)) {
+					result = true;
+				}
+
+				return result;
+			}
+
+			/**
 			 * @name 형태얻기
 			 * @since 2017-12-06
 			 * @param {*} value
@@ -67,8 +143,8 @@ try {
 					isObject = _getType(option) === 'object',
 					isString = typeof option === 'string';
 
-				//매개변수가 객체거나 문자거나 없을때
-				if(isObject || isString || typeof option === 'undefined') {
+				//요소이면서 매개변수가 객체거나 문자거나 없을때
+				if(_isElement($thisFirst) && (isObject || isString || typeof option === 'undefined')) {
 					//슬릭을 사용하면서 매개변수가 문자가 아닐때
 					if($thisFirst.hasClass('slick-initialized') && !isString) {
 						$thisFirst.slick('unslick');
@@ -162,7 +238,7 @@ try {
 				}
 
 				//요소 반환
-				return this;
+				return $thisFirst;
 			};
 		}else{
 			throw '제이쿼리가 없습니다.';
