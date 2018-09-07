@@ -13,6 +13,7 @@ pauseText | string | 일시정지에 대한 문자를 지정합니다.
 
 - 슬릭이 셋팅되어 있는 상태에서 재호출 시 오류제거
 - 매개변수에 이상한 값이 올 경우 오류제거
+- 코어 값에 이상한 값이 올 경우 오류제거
 
 ## kenwheeler/slick
 <https://github.com/kenwheeler/slick>
