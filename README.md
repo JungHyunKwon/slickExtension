@@ -7,7 +7,7 @@ autoArrow | element \|\| jQueryElement | 재생과 일시정지 토글 기능을
 playArrow | element \|\| jQueryElement | 재생 기능을 수행할 요소를 지정합니다.
 pauseArrow | element \|\| jQueryElement | 일시정지 기능을 수행할 요소를 지정합니다.
 lowIE | boolean | 인터넷익스플로러7, 8에서 반응형 사용여부 입니다.
-pauseAfterClick | boolean | 이전 또는 다음버튼 클릭 후 일시정지 여부 입니다.
+pauseOnArrowClick | boolean | 이전 또는 다음버튼 클릭 후 일시정지 여부 입니다.
 playText | string | 재생에 대한 문자를 지정합니다.
 pauseText | string | 일시정지에 대한 문자를 지정합니다.
 

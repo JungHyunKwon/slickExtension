@@ -10,7 +10,7 @@ try {
 		if(typeof $ === 'function') {
 			var _slick = $.fn.slick,
 				_userAgent = navigator.userAgent.toLowerCase(),
-				_isLowIE = _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
+				_isLowIE = _userAgent.indexOf('msie 6.0') > -1 || _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
 
 			/**
 			 * @name 요소 또는 제이쿼리 요소 확인
@@ -135,7 +135,7 @@ try {
 			/**
 			 * @name slickExtension
 			 * @since 2018-08-02
-			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseAfterClick : boolean, playText : string, pauseText : string}
+			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, playText : string, pauseText : string}
 			 * @return {jqueryElement}
 			 */
 			$.fn.slick = function(option) {
@@ -220,8 +220,8 @@ try {
 								event.preventDefault();
 							});
 							
-							//option.pauseAfterClick가 참일때
-							if(option.pauseAfterClick) {
+							//option.pauseOnArrowClick가 참일때
+							if(option.pauseOnArrowClick) {
 								//이전, 재생버튼
 								option.prevArrow.add(option.nextArrow).off('click.slickExtension').on('click.slickExtension', function(event) {
 									$thisFirst.slick('slickPause');
