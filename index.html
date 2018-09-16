@@ -40,8 +40,18 @@
 				pauseArrow : $('.pause'),
 				lowIE : true,
 				pauseOnArrowClick : true,
-				pauseText : '정지',
-				playText : '재생'
+				pause : '정지',
+				play : '재생',
+				total : $('.total'),
+				current : $('.current'),
+				customState : function(state) {
+					//현재 슬라이드 위치가 10보다 작을때
+					if(state.current < 10) {
+						state.current = '0' + state.current;
+					}
+
+					return state;
+				}
 			});
 		});
 	</script>
@@ -58,7 +68,7 @@
 <button type="button" class="play">재생</button>
 <button type="button" class="pause">정지</button>
 
-<br />
+<p><span class="current">&nbsp;</span>/<span class="total">&nbsp;</span></p>
 
 <button type="button" class="auto">&nbsp;</button>
 </body>
