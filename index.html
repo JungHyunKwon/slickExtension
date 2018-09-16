@@ -26,7 +26,6 @@
 				nextArrow : $('.next'),
 				autoplay : true,
 				slidesToShow : 2,
-				swipe : true,
 				responsive : [{
 					breakpoint : 641,
 					settings : {
@@ -38,10 +37,10 @@
 				autoArrow : $('.auto'),
 				playArrow : $('.play'),
 				pauseArrow : $('.pause'),
-				lowIE : true,
+				lowIE : false,
 				pauseOnArrowClick : true,
-				pause : '정지',
-				play : '재생',
+				pauseText : '정지',
+				playText : '재생',
 				total : $('.total'),
 				current : $('.current'),
 				customState : function(state) {
@@ -58,11 +57,10 @@
 </head>
 <body>
 <div class="list">
-	<div class="slide slide1">&nbsp;</div>
+	<div class="slide slide1"><a href="#n">11</a></div>
 	<div class="slide slide2">&nbsp;</div>
 	<div class="slide slide3">&nbsp;</div>
 </div>
-
 <button type="button" class="prev">이전</button>
 <button type="button" class="next">다음</button>
 <button type="button" class="play">재생</button>
