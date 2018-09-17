@@ -138,7 +138,7 @@ try {
 			/**
 			 * @name slickExtension
 			 * @since 2018-08-02
-			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
+			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
 			 * @return {jqueryElement}
 			 */
 			$.fn.slick = function(option) {
@@ -167,8 +167,37 @@ try {
 							delete option.responsive;
 						}
 
+						//문자가 아닐때
+						if(!option.playText) {
+							option.playText = 'play';
+						}
+
+						//문자가 아닐때
+						if(!option.pauseText) {
+							option.pauseText = 'pause';
+						}
+
+						/**
+						 * @name 일시정지
+						 * @since 2018-08-02
+						 */
+						function play(event) {
+							$thisFirst.slick('slickPlay');
+							option.$autoArrow.removeClass('active').text(option.pauseText);
+						}
+
+						/**
+						 * @name 일시정지
+						 * @since 2018-08-02
+						 */
+						function pause(event, slick, direction) {
+							$thisFirst.slick('slickPause');
+							option.$autoArrow.addClass('active').text(option.playText);
+						}
+
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtension', function(event, slick) {
+							$thisFirst.off('keydown.slickExtension');
 							option.$autoArrow.add(option.$playArrow).add(option.$pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtension');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
@@ -210,6 +239,11 @@ try {
 							option.$current.text(current);
 							option.$total.text(total);
 						});
+						
+						//스와이프 했을때 멈춤여부
+						if(option.pauseOnSwipe) {
+							$thisFirst.on('swipe.slickExtension', pause);
+						}
 					}
 
 					//슬릭적용
@@ -221,36 +255,20 @@ try {
 						option.$prevArrow.off('click.slick');
 						option.$nextArrow.off('click.slick');
 
-						//문자가 아닐때
-						if(typeof option.playText !== 'string') {
-							option.playText = 'play';
-						}
-
-						//문자가 아닐때
-						if(typeof option.pauseText !== 'string') {
-							option.pauseText = 'pause';
-						}
-
 						//일시정지 상태일때
 						if($thisFirst[0].slick.paused) {
-							$thisFirst.slick('slickPause');
-							option.$autoArrow.addClass('active').text(option.playText);
+							pause();
 						}else{
-							$thisFirst.slick('slickPlay');
-							option.$autoArrow.removeClass('active').text(option.pauseText);
+							play();
 						}
 
 						//자동버튼
 						option.$autoArrow.on('click.slickExtension', function(event) {
-							var $this = $(this);
-
 							//일시정지 상태일때
 							if($thisFirst[0].slick.paused) {
-								$thisFirst.slick('slickPlay');
-								$this.removeClass('active').text(option.pauseText);
+								play.call(this, event);
 							}else{
-								$thisFirst.slick('slickPause');
-								$this.addClass('active').text(option.playText);
+								pause.call(this, event);
 							}
 
 							event.preventDefault();
@@ -258,15 +276,13 @@ try {
 						
 						//재생버튼
 						option.$playArrow.on('click.slickExtension', function(event) {
-							option.$autoArrow.removeClass('active').text(option.pauseText);
-							$thisFirst.slick('slickPlay');
+							play.call(this, event);
 							event.preventDefault();
 						});
 						
 						//일시정지 버튼
 						option.$pauseArrow.on('click.slickExtension', function(event) {
-							option.$autoArrow.addClass('active').text(option.playText);
-							$thisFirst.slick('slickPause');
+							pause.call(this, event);
 							event.preventDefault();
 						});
 						
@@ -281,13 +297,22 @@ try {
 							$thisFirst.slick('slickNext');
 							event.preventDefault();
 						});
-
-						//option.pauseOnArrowClick이 참일때
+							
+						//네비게이션을 눌렀을때 멈춤여부
 						if(option.pauseOnArrowClick) {
 							//이전, 재생버튼
-							option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', function(event) {
-								$thisFirst.slick('slickPause');
-								option.$autoArrow.addClass('active').text(option.playText);
+							option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', pause);
+						}
+						
+						//방향키를 눌렀을때 멈춤여부
+						if(option.pauseOnDirectionKeyPush) {
+							$thisFirst.on('keydown.slickExtension', function(event) {
+								var tagName = this.tagName.toLowerCase();
+								
+								//textarea, input, select가 아닐때
+								if(tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') {
+									pause.call(this, event);
+								}
 							});
 						}
 					}

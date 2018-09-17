@@ -8,6 +8,8 @@ playArrow | element \|\| jQueryElement | | | | 재생 기능을 수행할 요소
 pauseArrow | element \|\| jQueryElement | | | | 일시정지 기능을 수행할 요소 입니다.
 lowIE | boolean | | false | | 인터넷익스플로러6, 7, 8에서 반응형 사용여부 입니다.
 pauseOnArrowClick | boolean | false | | | 이전 또는 다음버튼 클릭 후 일시정지 여부 입니다.
+pauseOnDirectionKeyPush | boolean | false | | | 방향키 클릭
+pauseOnSwipe | boolean | false | | | 이전 또는 다음버튼 클릭 후 일시정지 여부 입니다.
 playText | string | play | | | 재생에 대한 문자를 지정합니다.
 pauseText | string | pause | | | 일시정지에 대한 문자를 지정합니다.
 current | element \|\| jQueryElement | | | | 현재 슬라이드 위치를 표기할 요소 입니다.
