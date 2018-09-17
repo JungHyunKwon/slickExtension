@@ -145,9 +145,9 @@ try {
 				var $thisFirst = this.first(),
 					optionType = _getType(option);
 
-				//슬릭이 있으면서 요소이면서 매개변수가 객체거나 문자거나 없을때
+				//슬릭이 있으면서 요소이면서 매개변수가 셋팅하거나 메소드거나 아무것도 없을때
 				if(_isSlick && _isElement($thisFirst) && (optionType === 'object' || optionType === 'string' || optionType === 'undefined')) {
-					//슬릭을 사용하면서 문자가 아닐때
+					//슬릭을 사용하면서 메소드가 아닐때
 					if($thisFirst.hasClass('slick-initialized') && optionType !== 'string') {
 						$thisFirst.slick('unslick');
 					}
@@ -162,7 +162,7 @@ try {
 						option.$total = $(option.total);
 						option.$current = $(option.current);
 
-						//ie6, 7, 8 브라우저이면서 option.lowIE가 거짓일때
+						//ie6, 7, 8 브라우저를 대응하지 않을때
 						if(_isLowIE && !option.lowIE) {
 							delete option.responsive;
 						}
@@ -197,8 +197,12 @@ try {
 
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtension', function(event, slick) {
-							$thisFirst.off('keydown.slickExtension');
 							option.$autoArrow.add(option.$playArrow).add(option.$pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtension');
+
+							//방향키를 눌렀을때 멈춤여부
+							if(option.pauseOnDirectionKeyPush) {
+								$thisFirst.off('keydown.slickExtension');
+							}
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
 						}).on('init.slickExtension beforeChange.slickExtension', function(event, slick, currentSlide, nextSlide) {
