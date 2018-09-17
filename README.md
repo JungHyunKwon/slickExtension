@@ -2,7 +2,7 @@
 슬릭 플러그인에 대한 기능을 확장해주는 스크립트 입니다.
 
 이름 | 형태 | 기본값 | 매개변수 | 반환 | 설명
-| :-- | :-- | :---- | :-- | :-- |
+| :-- | :-- | :--- | :---- | :-- | :-- |
 autoArrow | element \|\| jQueryElement | | | | 재생과 일시정지 토글 기능을 수행할 요소 입니다.
 playArrow | element \|\| jQueryElement | | | | 재생 기능을 수행할 요소 입니다.
 pauseArrow | element \|\| jQueryElement | | | | 일시정지 기능을 수행할 요소 입니다.
