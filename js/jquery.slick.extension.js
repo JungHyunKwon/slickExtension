@@ -200,7 +200,7 @@ try {
 							option.$autoArrow.add(option.$playArrow).add(option.$pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtension');
 
 							//방향키를 눌렀을때 멈춤여부
-							if(option.pauseOnDirectionKeyPush) {
+							if(option.pauseOnDirectionKeyPush === true) {
 								$thisFirst.off('keydown.slickExtension');
 							}
 						
@@ -245,7 +245,7 @@ try {
 						});
 						
 						//스와이프 했을때 멈춤여부
-						if(option.pauseOnSwipe) {
+						if(option.pauseOnSwipe === true) {
 							$thisFirst.on('swipe.slickExtension', pause);
 						}
 					}
@@ -303,18 +303,19 @@ try {
 						});
 							
 						//네비게이션을 눌렀을때 멈춤여부
-						if(option.pauseOnArrowClick) {
+						if(option.pauseOnArrowClick === true) {
 							//이전, 재생버튼
 							option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', pause);
 						}
 						
 						//방향키를 눌렀을때 멈춤여부
-						if(option.pauseOnDirectionKeyPush) {
+						if(option.pauseOnDirectionKeyPush === true) {
 							$thisFirst.on('keydown.slickExtension', function(event) {
-								var tagName = this.tagName.toLowerCase();
+								var tagName = this.tagName.toLowerCase(),
+									keyCode = event.keyCode || event.which;
 								
-								//textarea, input, select가 아닐때
-								if(tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') {
+								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀을때
+								if(option.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && (keyCode === 37 || keyCode === 39)) {
 									pause.call(this, event);
 								}
 							});
