@@ -216,6 +216,11 @@ try {
 								//슬라이드 갯수가 있을때
 								if(total) {
 									current = 1;
+									
+									//셋팅되었을때
+									if(event.type === 'init') {
+										pause.call(this, event);
+									}
 								}else{
 									current = 0;
 								}
