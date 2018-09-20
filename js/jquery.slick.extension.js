@@ -315,7 +315,7 @@ try {
 									keyCode = event.keyCode || event.which;
 								
 								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀을때
-								if(option.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && (keyCode === 37 || keyCode === 39)) {
+								if($thisFirst[0].slick.options.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && (keyCode === 37 || keyCode === 39)) {
 									pause.call(this, event);
 								}
 							});
