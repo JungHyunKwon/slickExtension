@@ -138,7 +138,7 @@ try {
 			/**
 			 * @name slickExtension
 			 * @since 2018-08-02
-			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
+			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDotsClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
 			 * @return {jqueryElement}
 			 */
 			$.fn.slick = function(option) {
@@ -162,6 +162,7 @@ try {
 						option.$nextArrow = $(option.nextArrow);
 						option.$total = $(option.total);
 						option.$current = $(option.current);
+						option.$dots = $(option.appendDots);
 
 						//ie6, 7, 8 브라우저를 대응하지 않을때
 						if(_isLowIE && !option.lowIE) {
@@ -216,12 +217,8 @@ try {
 
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtension', function(event, slick) {
-							option.$autoArrow.add(option.$playArrow).add(option.$pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtension');
-
-							//방향키를 눌렀을때 멈춤여부
-							if(option.pauseOnDirectionKeyPush === true) {
-								$thisFirst.off('keydown.slickExtension');
-							}
+							option.$autoArrow.add(option.$playArrow).add(option.$pauseArrow).add(option.$prevArrow).add(option.$nextArrow).add(option.$dotsItem).off('click.slickExtension');
+							$thisFirst.off('keydown.slickExtension');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
 						}).on('init.slickExtension beforeChange.slickExtension', function(event, slick, currentSlide, nextSlide) {
@@ -314,13 +311,29 @@ try {
 							$thisFirst.slick('slickNext');
 							event.preventDefault();
 						});
-							
+
 						//네비게이션을 눌렀을때 멈춤여부
 						if(option.pauseOnArrowClick === true) {
 							//이전, 재생버튼
 							option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', pause);
 						}
 						
+						//도트를 사용하고 도트를 눌렀을때 멈춤여부
+						if(option.dots === true && option.pauseOnDotsClick === true) {
+							var dotsClass = '.' + (option.dotsClass || 'slick-dots').split(' ').join('.');
+							
+							//도트 매핑
+							option.$dots = $thisFirst.children(dotsClass);
+
+							//도트가 없을때
+							if(!option.$dots.length) {
+								option.$dots = $(option.appendDots).children(dotsClass);
+							}
+
+							option.$dotsItem = option.$dots.children('li');
+							option.$dotsItem.on('click.slickExtension', pause);
+						}
+
 						//방향키를 눌렀을때 멈춤여부
 						if(option.pauseOnDirectionKeyPush === true) {
 							$thisFirst.on('keydown.slickExtension', function(event) {

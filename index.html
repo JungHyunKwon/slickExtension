@@ -25,6 +25,9 @@
 				prevArrow : $('.prev'),
 				nextArrow : $('.next'),
 				autoplay : true,
+				dots : true,
+				dotsClass : 'slick-dots',
+				appendDots : $('body'),
 				slidesToShow : 2,
 				responsive : [{
 					breakpoint : 641,
@@ -41,6 +44,7 @@
 				pauseOnArrowClick : true,
 				pauseOnDirectionKeyPush : true,
 				pauseOnSwipe : true,
+				pauseOnDotsClick : true,
 				pauseText : '정지',
 				playText : '재생',
 				total : $('.total'),
