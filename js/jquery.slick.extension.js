@@ -160,7 +160,6 @@ try {
 						option.pauseArrow = $(option.pauseArrow);
 						option.total = $(option.total);
 						option.current = $(option.current);
-						option.appendDots = $(option.appendDots);
 
 						//ie6, 7, 8 브라우저를 대응하지 않을때
 						if(_isLowIE && !option.lowIE) {
@@ -223,7 +222,7 @@ try {
 
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtension', function(event, slick) {
-							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.prevArrow).add(option.nextArrow).off('click.slickExtension');
+							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtension');
 							$thisFirst.off('keydown.slickExtension');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
@@ -294,16 +293,16 @@ try {
 						var slick = thisFirst.slick,
 							options = getOptions();
 
-						option.prevArrow = slick.$prevArrow;
-						option.nextArrow = slick.$nextArrow;
-						option.dots = slick.$dots;
+						option.$prevArrow = slick.$prevArrow || $();
+						option.$nextArrow = slick.$nextArrow || $();
+						option.$dots = slick.$dots || $();
 
 						//분기 이벤트 발생
 						$thisFirst.triggerHandler('breakpoint.slickExtension');
 
 						//이벤트제거
-						option.prevArrow.off('click.slick');
-						option.nextArrow.off('click.slick');
+						option.$prevArrow.off('click.slick');
+						option.$nextArrow.off('click.slick');
 
 						//자동재생을 허용했을때
 						if(option.autoplay === true) {
@@ -331,27 +330,27 @@ try {
 						});
 						
 						//이전 버튼
-						option.prevArrow.on('click.slickExtension', function(event) {
+						option.$prevArrow.on('click.slickExtension', function(event) {
 							$thisFirst.slick('slickPrev');
 							event.preventDefault();
 						});
 						
 						//다음 버튼
-						option.nextArrow.on('click.slickExtension', function(event) {
+						option.$nextArrow.on('click.slickExtension', function(event) {
 							$thisFirst.slick('slickNext');
 							event.preventDefault();
 						});
 
 						//이전, 재생버튼
-						option.prevArrow.add(option.nextArrow).on('click.slickExtension', function(event) {
+						option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', function(event) {
 							//네비게이션을 눌렀을때 멈춤여부
 							if(options.pauseOnArrowClick === true) {
 								pause();
 							}
 						});
-						
+
 						//도트 아이템
-						option.dots.children('li').on('click.slickExtension', function(event) {
+						option.$dots.children('li').on('click.slickExtension', function(event) {
 							//도트를 사용하고 도트를 눌렀을때 멈춤여부
 							if(options.dots === true && options.pauseOnDotsClick === true) {
 								pause();
