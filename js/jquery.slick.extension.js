@@ -158,8 +158,6 @@ try {
 						option.autoArrow = $(option.autoArrow);
 						option.playArrow = $(option.playArrow);
 						option.pauseArrow = $(option.pauseArrow);
-						option.prevArrow = $(option.prevArrow);
-						option.nextArrow = $(option.nextArrow);
 						option.total = $(option.total);
 						option.current = $(option.current);
 						option.appendDots = $(option.appendDots);
@@ -185,7 +183,7 @@ try {
 						 */
 						function play() {
 							//슬라이드 갯수가 2개 이상일때
-							if(thisFirst.slick.$slides.length > 1) {
+							if(slick.$slides.length > 1) {
 								$thisFirst.slick('slickPlay');
 								option.autoArrow.removeClass('active').text(option.pauseText);
 							}else{
@@ -208,7 +206,7 @@ try {
 						 */
 						function toggle() {
 							//일시정지 상태일때
-							if(thisFirst.slick.paused) {
+							if(slick.paused) {
 								play();
 							}else{
 								pause();
@@ -220,12 +218,12 @@ try {
 						 * @since 2018-08-02
 						 */
 						function getOptions() {
-							return $.extend(thisFirst.slick.breakpointSettings[thisFirst.slick.activeBreakpoint], thisFirst.slick.options) || {};
+							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.options) || {};
 						}
 
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtension', function(event, slick) {
-							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.prevArrow).add(option.nextArrow).add(option.dotItem).off('click.slickExtension');
+							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.prevArrow).add(option.nextArrow).off('click.slickExtension');
 							$thisFirst.off('keydown.slickExtension');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
@@ -267,20 +265,8 @@ try {
 							option.current.text(current);
 							option.total.text(total);
 						}).on('breakpoint.slickExtension', function(event, slick, breakpoint) {
-							//슬릭이 없을때
-							if(!slick) {
-								slick = thisFirst.slick;
-							}
-
-							//분기가 없을때
-							if(!breakpoint) {
-								breakpoint = slick.activeBreakpoint;
-							}
-
-							//활성화된 분기가 있을때
-							if(breakpoint) {
-								options = getOptions();
-							}
+							//옵션갱신
+							options = getOptions();
 						}).on('swipe.slickExtension', function(event, slick, direction) {
 							//스와이프 했을때 멈춤여부
 							if(options.pauseOnSwipe === true) {
@@ -305,8 +291,12 @@ try {
 
 					//객체일때
 					if(optionType === 'object') {
-						var options = getOptions(),
-							dotsClass = '.' + (option.dotsClass || 'slick-dots').split(' ').join('.');
+						var slick = thisFirst.slick,
+							options = getOptions();
+
+						option.prevArrow = slick.$prevArrow;
+						option.nextArrow = slick.$nextArrow;
+						option.dots = slick.$dots;
 
 						//분기 이벤트 발생
 						$thisFirst.triggerHandler('breakpoint.slickExtension');
@@ -360,19 +350,8 @@ try {
 							}
 						});
 						
-						//도트 매핑
-						option.dot = $thisFirst.children(dotsClass);
-
-						//도트가 없을때
-						if(!option.dot.length) {
-							option.dot = option.appendDots.children(dotsClass);
-						}
-
-						//도트 아이템 매핑
-						option.dotItem = option.dot.children('li');
-						
 						//도트 아이템
-						option.dotItem.on('click.slickExtension', function(event) {
+						option.dots.children('li').on('click.slickExtension', function(event) {
 							//도트를 사용하고 도트를 눌렀을때 멈춤여부
 							if(options.dots === true && options.pauseOnDotsClick === true) {
 								pause();
