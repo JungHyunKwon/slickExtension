@@ -155,14 +155,14 @@ try {
 
 					//객체일때
 					if(optionType === 'object') {
-						option.$autoArrow = $(option.autoArrow);
-						option.$playArrow = $(option.playArrow);
-						option.$pauseArrow = $(option.pauseArrow);
-						option.$prevArrow = $(option.prevArrow);
-						option.$nextArrow = $(option.nextArrow);
-						option.$total = $(option.total);
-						option.$current = $(option.current);
-						option.$dots = $(option.appendDots);
+						option.autoArrow = $(option.autoArrow);
+						option.playArrow = $(option.playArrow);
+						option.pauseArrow = $(option.pauseArrow);
+						option.prevArrow = $(option.prevArrow);
+						option.nextArrow = $(option.nextArrow);
+						option.total = $(option.total);
+						option.current = $(option.current);
+						option.appendDots = $(option.appendDots);
 
 						//ie6, 7, 8 브라우저를 대응하지 않을때
 						if(_isLowIE && !option.lowIE) {
@@ -170,12 +170,12 @@ try {
 						}
 
 						//문자가 아닐때
-						if(!option.playText) {
+						if(typeof option.playText !== 'string') {
 							option.playText = 'play';
 						}
 
 						//문자가 아닐때
-						if(!option.pauseText) {
+						if(typeof option.pauseText !== 'string') {
 							option.pauseText = 'pause';
 						}
 
@@ -187,7 +187,7 @@ try {
 							//슬라이드 갯수가 2개 이상일때
 							if(thisFirst.slick.$slides.length > 1) {
 								$thisFirst.slick('slickPlay');
-								option.$autoArrow.removeClass('active').text(option.pauseText);
+								option.autoArrow.removeClass('active').text(option.pauseText);
 							}else{
 								pause();
 							}
@@ -199,7 +199,7 @@ try {
 						 */
 						function pause() {
 							$thisFirst.slick('slickPause');
-							option.$autoArrow.addClass('active').text(option.playText);
+							option.autoArrow.addClass('active').text(option.playText);
 						}
 						
 						/**
@@ -214,17 +214,25 @@ try {
 								pause();
 							}
 						}
+						
+						/**
+						 * @name 옵션 얻기
+						 * @since 2018-08-02
+						 */
+						function getOptions() {
+							return $.extend(thisFirst.slick.breakpointSettings[thisFirst.slick.activeBreakpoint], thisFirst.slick.options) || {};
+						}
 
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtension', function(event, slick) {
-							option.$autoArrow.add(option.$playArrow).add(option.$pauseArrow).add(option.$prevArrow).add(option.$nextArrow).add(option.$dotsItem).off('click.slickExtension');
+							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.prevArrow).add(option.nextArrow).add(option.dotItem).off('click.slickExtension');
 							$thisFirst.off('keydown.slickExtension');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
-						}).on('init.slickExtension beforeChange.slickExtension', function(event, slick, currentSlide, nextSlide) {
+						}).on('init.slickExtension reInit.slickExtension beforeChange.slickExtension', function(event, slick, currentSlide, nextSlide) {
 							var current = nextSlide,
 								total = slick.slideCount;
-							
+
 							//다음 슬라이드가 있을때
 							if(current) {
 								current++;
@@ -256,14 +264,40 @@ try {
 								total = customState.total || total;
 							}
 
-							option.$current.text(current);
-							option.$total.text(total);
+							option.current.text(current);
+							option.total.text(total);
+						}).on('breakpoint.slickExtension', function(event, slick, breakpoint) {
+							//슬릭이 없을때
+							if(!slick) {
+								slick = thisFirst.slick;
+							}
+
+							//분기가 없을때
+							if(!breakpoint) {
+								breakpoint = slick.activeBreakpoint;
+							}
+
+							//활성화된 분기가 있을때
+							if(breakpoint) {
+								options = getOptions();
+							}
+						}).on('swipe.slickExtension', function(event, slick, direction) {
+							//스와이프 했을때 멈춤여부
+							if(options.pauseOnSwipe === true) {
+								pause();
+							}
+						}).on('keydown.slickExtension', function(event) {
+							//방향키를 눌렀을때 멈춤여부
+							if(options.pauseOnDirectionKeyPush === true) {
+								var tagName = this.tagName.toLowerCase(),
+									keyCode = event.keyCode || event.which;
+								
+								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀거나 verticalSwiping기능을 사용중이면서 ↑ 또는 ↓를 눌렀을때
+								if(options.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && ((keyCode === 37 || keyCode === 39) || options.verticalSwiping && (keyCode === 38 || keyCode === 40))) {
+									pause();
+								}
+							}
 						});
-						
-						//스와이프 했을때 멈춤여부
-						if(option.pauseOnSwipe === true) {
-							$thisFirst.on('swipe.slickExtension', pause);
-						}
 					}
 
 					//슬릭적용
@@ -271,9 +305,15 @@ try {
 
 					//객체일때
 					if(optionType === 'object') {
+						var options = getOptions(),
+							dotsClass = '.' + (option.dotsClass || 'slick-dots').split(' ').join('.');
+
+						//분기 이벤트 발생
+						$thisFirst.triggerHandler('breakpoint.slickExtension');
+
 						//이벤트제거
-						option.$prevArrow.off('click.slick');
-						option.$nextArrow.off('click.slick');
+						option.prevArrow.off('click.slick');
+						option.nextArrow.off('click.slick');
 
 						//자동재생을 허용했을때
 						if(option.autoplay === true) {
@@ -283,69 +323,61 @@ try {
 						}
 
 						//자동버튼
-						option.$autoArrow.on('click.slickExtension', function(event) {
+						option.autoArrow.on('click.slickExtension', function(event) {
 							toggle();
 							event.preventDefault();
 						});
 						
 						//재생버튼
-						option.$playArrow.on('click.slickExtension', function(event) {
+						option.playArrow.on('click.slickExtension', function(event) {
 							play();
 							event.preventDefault();
 						});
 						
 						//일시정지 버튼
-						option.$pauseArrow.on('click.slickExtension', function(event) {
+						option.pauseArrow.on('click.slickExtension', function(event) {
 							pause();
 							event.preventDefault();
 						});
 						
 						//이전 버튼
-						option.$prevArrow.on('click.slickExtension', function(event) {
+						option.prevArrow.on('click.slickExtension', function(event) {
 							$thisFirst.slick('slickPrev');
 							event.preventDefault();
 						});
 						
 						//다음 버튼
-						option.$nextArrow.on('click.slickExtension', function(event) {
+						option.nextArrow.on('click.slickExtension', function(event) {
 							$thisFirst.slick('slickNext');
 							event.preventDefault();
 						});
 
-						//네비게이션을 눌렀을때 멈춤여부
-						if(option.pauseOnArrowClick === true) {
-							//이전, 재생버튼
-							option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', pause);
-						}
-						
-						//도트를 사용하고 도트를 눌렀을때 멈춤여부
-						if(option.dots === true && option.pauseOnDotsClick === true) {
-							var dotsClass = '.' + (option.dotsClass || 'slick-dots').split(' ').join('.');
-							
-							//도트 매핑
-							option.$dots = $thisFirst.children(dotsClass);
-
-							//도트가 없을때
-							if(!option.$dots.length) {
-								option.$dots = $(option.appendDots).children(dotsClass);
+						//이전, 재생버튼
+						option.prevArrow.add(option.nextArrow).on('click.slickExtension', function(event) {
+							//네비게이션을 눌렀을때 멈춤여부
+							if(options.pauseOnArrowClick === true) {
+								pause();
 							}
+						});
+						
+						//도트 매핑
+						option.dot = $thisFirst.children(dotsClass);
 
-							option.$dotsItem = option.$dots.children('li');
-							option.$dotsItem.on('click.slickExtension', pause);
+						//도트가 없을때
+						if(!option.dot.length) {
+							option.dot = option.appendDots.children(dotsClass);
 						}
 
-						//방향키를 눌렀을때 멈춤여부
-						if(option.pauseOnDirectionKeyPush === true) {
-							$thisFirst.on('keydown.slickExtension', function(event) {
-								var tagName = this.tagName.toLowerCase(),
-									keyCode = event.keyCode || event.which;
-								
-								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀을때
-								if(thisFirst.slick.options.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && (keyCode === 37 || keyCode === 39)) {
-									pause();
-								}
-							});
-						}
+						//도트 아이템 매핑
+						option.dotItem = option.dot.children('li');
+						
+						//도트 아이템
+						option.dotItem.on('click.slickExtension', function(event) {
+							//도트를 사용하고 도트를 눌렀을때 멈춤여부
+							if(options.dots === true && options.pauseOnDotsClick === true) {
+								pause();
+							}
+						});
 					}
 				}
 
