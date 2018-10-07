@@ -144,7 +144,7 @@ try {
 			}
 
 			/**
-			 * @name slickExtension
+			 * @name slickExtensions
 			 * @since 2018-08-02
 			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDotsClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
 			 * @return {jqueryElement}
@@ -229,12 +229,12 @@ try {
 						}
 
 						//파괴되었을때
-						$thisFirst.on('destroy.slickExtension', function(event, slick) {
-							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtension');
-							$thisFirst.off('keydown.slickExtension');
+						$thisFirst.on('destroy.slickExtensions', function(event, slick) {
+							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtensions');
+							$thisFirst.off('keydown.slickExtensions');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
-						}).on('init.slickExtension reInit.slickExtension beforeChange.slickExtension', function(event, slick, currentSlide, nextSlide) {
+						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, slick, currentSlide, nextSlide) {
 							var current = nextSlide,
 								total = slick.slideCount;
 
@@ -271,15 +271,15 @@ try {
 
 							option.current.text(current);
 							option.total.text(total);
-						}).on('breakpoint.slickExtension', function(event, slick, breakpoint) {
+						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
 							//옵션갱신
 							options = getOptions();
-						}).on('swipe.slickExtension', function(event, slick, direction) {
+						}).on('swipe.slickExtensions', function(event, slick, direction) {
 							//스와이프 했을때 멈춤여부
 							if(options.pauseOnSwipe === true) {
 								pause();
 							}
-						}).on('keydown.slickExtension', function(event) {
+						}).on('keydown.slickExtensions', function(event) {
 							//방향키를 눌렀을때 멈춤여부
 							if(options.pauseOnDirectionKeyPush === true) {
 								var tagName = this.tagName.toLowerCase(),
@@ -306,7 +306,7 @@ try {
 						option.$dots = slick.$dots || $();
 
 						//분기 이벤트 발생
-						$thisFirst.triggerHandler('breakpoint.slickExtension');
+						$thisFirst.triggerHandler('breakpoint.slickExtensions');
 
 						//이벤트제거
 						option.$prevArrow.off('click.slick');
@@ -320,37 +320,37 @@ try {
 						}
 
 						//자동버튼
-						option.autoArrow.on('click.slickExtension', function(event) {
+						option.autoArrow.on('click.slickExtensions', function(event) {
 							toggle();
 							event.preventDefault();
 						});
 						
 						//재생버튼
-						option.playArrow.on('click.slickExtension', function(event) {
+						option.playArrow.on('click.slickExtensions', function(event) {
 							play();
 							event.preventDefault();
 						});
 						
 						//일시정지 버튼
-						option.pauseArrow.on('click.slickExtension', function(event) {
+						option.pauseArrow.on('click.slickExtensions', function(event) {
 							pause();
 							event.preventDefault();
 						});
 						
 						//이전 버튼
-						option.$prevArrow.on('click.slickExtension', function(event) {
+						option.$prevArrow.on('click.slickExtensions', function(event) {
 							$thisFirst.slick('slickPrev');
 							event.preventDefault();
 						});
 						
 						//다음 버튼
-						option.$nextArrow.on('click.slickExtension', function(event) {
+						option.$nextArrow.on('click.slickExtensions', function(event) {
 							$thisFirst.slick('slickNext');
 							event.preventDefault();
 						});
 
 						//이전, 재생버튼
-						option.$prevArrow.add(option.$nextArrow).on('click.slickExtension', function(event) {
+						option.$prevArrow.add(option.$nextArrow).on('click.slickExtensions', function(event) {
 							//네비게이션을 눌렀을때 멈춤여부
 							if(options.pauseOnArrowClick === true) {
 								pause();
@@ -358,7 +358,7 @@ try {
 						});
 
 						//도트 아이템
-						option.$dots.children('li').on('click.slickExtension', function(event) {
+						option.$dots.children('li').on('click.slickExtensions', function(event) {
 							//도트를 사용하고 도트를 눌렀을때 멈춤여부
 							if(options.dots === true && options.pauseOnDotsClick === true) {
 								pause();
