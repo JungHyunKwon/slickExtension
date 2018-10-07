@@ -221,11 +221,11 @@ try {
 						}
 						
 						/**
-						 * @name 옵션 얻기
+						 * @name 슬릭 옵션 얻기
 						 * @since 2018-08-02
 						 */
-						function getOptions() {
-							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.optionss) || {};
+						function getSlickOptions() {
+							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.slickOptions) || {};
 						}
 
 						//파괴되었을때
@@ -273,20 +273,20 @@ try {
 							options.total.text(total);
 						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
 							//옵션갱신
-							optionss = getOptions();
+							slickOptions = getSlickOptions();
 						}).on('swipe.slickExtensions', function(event, slick, direction) {
 							//스와이프 했을때 멈춤여부
-							if(optionss.pauseOnSwipe === true) {
+							if(slickOptions.pauseOnSwipe === true) {
 								pause();
 							}
 						}).on('keydown.slickExtensions', function(event) {
 							//방향키를 눌렀을때 멈춤여부
-							if(optionss.pauseOnDirectionKeyPush === true) {
+							if(slickOptions.pauseOnDirectionKeyPush === true) {
 								var tagName = this.tagName.toLowerCase(),
 									keyCode = event.keyCode || event.which;
 								
 								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀거나 verticalSwiping기능을 사용중이면서 ↑ 또는 ↓를 눌렀을때
-								if(optionss.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && ((keyCode === 37 || keyCode === 39) || optionss.verticalSwiping && (keyCode === 38 || keyCode === 40))) {
+								if(slickOptions.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && ((keyCode === 37 || keyCode === 39) || slickOptions.verticalSwiping && (keyCode === 38 || keyCode === 40))) {
 									pause();
 								}
 							}
@@ -299,7 +299,7 @@ try {
 					//객체일때
 					if(optionsType === 'object') {
 						var slick = thisFirst.slick,
-							optionss = getOptions();
+							slickOptions = getSlickOptions();
 
 						options.$prevArrow = slick.$prevArrow || $();
 						options.$nextArrow = slick.$nextArrow || $();
@@ -352,7 +352,7 @@ try {
 						//이전, 재생버튼
 						options.$prevArrow.add(options.$nextArrow).on('click.slickExtensions', function(event) {
 							//네비게이션을 눌렀을때 멈춤여부
-							if(optionss.pauseOnArrowClick === true) {
+							if(slickOptions.pauseOnArrowClick === true) {
 								pause();
 							}
 						});
@@ -360,7 +360,7 @@ try {
 						//도트 아이템
 						options.$dots.children('li').on('click.slickExtensions', function(event) {
 							//도트를 사용하고 도트를 눌렀을때 멈춤여부
-							if(optionss.dots === true && optionss.pauseOnDotsClick === true) {
+							if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
 								pause();
 							}
 						});
