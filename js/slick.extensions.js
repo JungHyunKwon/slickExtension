@@ -146,42 +146,42 @@ try {
 			/**
 			 * @name slickExtensions
 			 * @since 2018-08-02
-			 * @param {object} option {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDotsClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
+			 * @param {object} options {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDotsClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
 			 * @return {jqueryElement}
 			 */
-			$.fn.slick = function(option) {
+			$.fn.slick = function(options) {
 				var $thisFirst = this.first(),
 					thisFirst = $thisFirst[0],
-					optionType = _getType(option);
+					optionsType = _getType(options);
 
 				//슬릭이 있으면서 요소이면서 매개변수가 셋팅하거나 메소드거나 아무것도 없을때
-				if(_isSlick && _isElement($thisFirst) && (optionType === 'object' || optionType === 'string' || optionType === 'undefined')) {
+				if(_isSlick && _isElement($thisFirst) && (optionsType === 'object' || optionsType === 'string' || optionsType === 'undefined')) {
 					//슬릭을 사용하면서 메소드가 아닐때
-					if($thisFirst.hasClass('slick-initialized') && optionType !== 'string') {
+					if($thisFirst.hasClass('slick-initialized') && optionsType !== 'string') {
 						$thisFirst.slick('unslick');
 					}
 
 					//객체일때
-					if(optionType === 'object') {
-						option.autoArrow = $(option.autoArrow);
-						option.playArrow = $(option.playArrow);
-						option.pauseArrow = $(option.pauseArrow);
-						option.total = $(option.total);
-						option.current = $(option.current);
+					if(optionsType === 'object') {
+						options.autoArrow = $(options.autoArrow);
+						options.playArrow = $(options.playArrow);
+						options.pauseArrow = $(options.pauseArrow);
+						options.total = $(options.total);
+						options.current = $(options.current);
 
 						//ie6, 7, 8 브라우저를 대응하지 않을때
-						if(_isLowIE && !option.lowIE) {
-							delete option.responsive;
+						if(_isLowIE && !options.lowIE) {
+							delete options.responsive;
 						}
 
 						//문자가 아닐때
-						if(typeof option.playText !== 'string') {
-							option.playText = 'play';
+						if(typeof options.playText !== 'string') {
+							options.playText = 'play';
 						}
 
 						//문자가 아닐때
-						if(typeof option.pauseText !== 'string') {
-							option.pauseText = 'pause';
+						if(typeof options.pauseText !== 'string') {
+							options.pauseText = 'pause';
 						}
 
 						/**
@@ -192,7 +192,7 @@ try {
 							//슬라이드 갯수가 2개 이상일때
 							if(slick.$slides.length > 1) {
 								$thisFirst.slick('slickPlay');
-								option.autoArrow.removeClass('active').text(option.pauseText);
+								options.autoArrow.removeClass('active').text(options.pauseText);
 							}else{
 								pause();
 							}
@@ -204,7 +204,7 @@ try {
 						 */
 						function pause() {
 							$thisFirst.slick('slickPause');
-							option.autoArrow.addClass('active').text(option.playText);
+							options.autoArrow.addClass('active').text(options.playText);
 						}
 						
 						/**
@@ -225,12 +225,12 @@ try {
 						 * @since 2018-08-02
 						 */
 						function getOptions() {
-							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.options) || {};
+							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.optionss) || {};
 						}
 
 						//파괴되었을때
 						$thisFirst.on('destroy.slickExtensions', function(event, slick) {
-							option.autoArrow.add(option.playArrow).add(option.pauseArrow).add(option.$prevArrow).add(option.$nextArrow).off('click.slickExtensions');
+							options.autoArrow.add(options.playArrow).add(options.pauseArrow).add(options.$prevArrow).add(options.$nextArrow).off('click.slickExtensions');
 							$thisFirst.off('keydown.slickExtensions');
 						
 						//셋팅되었을때, 슬라이드가 넘어갔을때
@@ -251,8 +251,8 @@ try {
 							}
 
 							//함수일때
-							if(typeof option.customState === 'function') {
-								var customState = option.customState({
+							if(typeof options.customState === 'function') {
+								var customState = options.customState({
 									current : current,
 									total : total
 								});
@@ -269,24 +269,24 @@ try {
 								total = customState.total || total;
 							}
 
-							option.current.text(current);
-							option.total.text(total);
+							options.current.text(current);
+							options.total.text(total);
 						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
 							//옵션갱신
-							options = getOptions();
+							optionss = getOptions();
 						}).on('swipe.slickExtensions', function(event, slick, direction) {
 							//스와이프 했을때 멈춤여부
-							if(options.pauseOnSwipe === true) {
+							if(optionss.pauseOnSwipe === true) {
 								pause();
 							}
 						}).on('keydown.slickExtensions', function(event) {
 							//방향키를 눌렀을때 멈춤여부
-							if(options.pauseOnDirectionKeyPush === true) {
+							if(optionss.pauseOnDirectionKeyPush === true) {
 								var tagName = this.tagName.toLowerCase(),
 									keyCode = event.keyCode || event.which;
 								
 								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀거나 verticalSwiping기능을 사용중이면서 ↑ 또는 ↓를 눌렀을때
-								if(options.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && ((keyCode === 37 || keyCode === 39) || options.verticalSwiping && (keyCode === 38 || keyCode === 40))) {
+								if(optionss.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && ((keyCode === 37 || keyCode === 39) || optionss.verticalSwiping && (keyCode === 38 || keyCode === 40))) {
 									pause();
 								}
 							}
@@ -294,73 +294,73 @@ try {
 					}
 
 					//슬릭적용
-					_slick.call($thisFirst, option);
+					_slick.call($thisFirst, options);
 
 					//객체일때
-					if(optionType === 'object') {
+					if(optionsType === 'object') {
 						var slick = thisFirst.slick,
-							options = getOptions();
+							optionss = getOptions();
 
-						option.$prevArrow = slick.$prevArrow || $();
-						option.$nextArrow = slick.$nextArrow || $();
-						option.$dots = slick.$dots || $();
+						options.$prevArrow = slick.$prevArrow || $();
+						options.$nextArrow = slick.$nextArrow || $();
+						options.$dots = slick.$dots || $();
 
 						//분기 이벤트 발생
 						$thisFirst.triggerHandler('breakpoint.slickExtensions');
 
 						//이벤트제거
-						option.$prevArrow.off('click.slick');
-						option.$nextArrow.off('click.slick');
+						options.$prevArrow.off('click.slick');
+						options.$nextArrow.off('click.slick');
 
 						//자동재생을 허용했을때
-						if(option.autoplay === true) {
+						if(options.autoplay === true) {
 							play();
 						}else{
 							pause();
 						}
 
 						//자동버튼
-						option.autoArrow.on('click.slickExtensions', function(event) {
+						options.autoArrow.on('click.slickExtensions', function(event) {
 							toggle();
 							event.preventDefault();
 						});
 						
 						//재생버튼
-						option.playArrow.on('click.slickExtensions', function(event) {
+						options.playArrow.on('click.slickExtensions', function(event) {
 							play();
 							event.preventDefault();
 						});
 						
 						//일시정지 버튼
-						option.pauseArrow.on('click.slickExtensions', function(event) {
+						options.pauseArrow.on('click.slickExtensions', function(event) {
 							pause();
 							event.preventDefault();
 						});
 						
 						//이전 버튼
-						option.$prevArrow.on('click.slickExtensions', function(event) {
+						options.$prevArrow.on('click.slickExtensions', function(event) {
 							$thisFirst.slick('slickPrev');
 							event.preventDefault();
 						});
 						
 						//다음 버튼
-						option.$nextArrow.on('click.slickExtensions', function(event) {
+						options.$nextArrow.on('click.slickExtensions', function(event) {
 							$thisFirst.slick('slickNext');
 							event.preventDefault();
 						});
 
 						//이전, 재생버튼
-						option.$prevArrow.add(option.$nextArrow).on('click.slickExtensions', function(event) {
+						options.$prevArrow.add(options.$nextArrow).on('click.slickExtensions', function(event) {
 							//네비게이션을 눌렀을때 멈춤여부
-							if(options.pauseOnArrowClick === true) {
+							if(optionss.pauseOnArrowClick === true) {
 								pause();
 							}
 						});
 
 						//도트 아이템
-						option.$dots.children('li').on('click.slickExtensions', function(event) {
+						options.$dots.children('li').on('click.slickExtensions', function(event) {
 							//도트를 사용하고 도트를 눌렀을때 멈춤여부
-							if(options.dots === true && options.pauseOnDotsClick === true) {
+							if(optionss.dots === true && optionss.pauseOnDotsClick === true) {
 								pause();
 							}
 						});
