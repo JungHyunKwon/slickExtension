@@ -248,7 +248,7 @@ try {
 						 * @since 2018-08-02
 						 */
 						function getSlickOptions() {
-							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.settings) || {};
+							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.options) || {};
 						}
 
 						//파괴되었을때
