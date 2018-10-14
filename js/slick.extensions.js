@@ -21,15 +21,19 @@ try {
 			 */
 			function _isElement(options) {
 				var optionsType = _getType(options),
+					hasJQuery = (typeof $ === 'function') ? true : false,
 					result = false;
 				
-				//요소이거나 배열일때
-				if(optionsType === 'element' || optionsType === 'array') {
+				//요소이거나 배열이거나 제이쿼리 요소일때
+				if(optionsType === 'element' || optionsType === 'array' || (hasJQuery && options)) {
 					options = {
 						element : options
 					};
-
-					optionsType = 'object';
+					
+					//요소이거나 배열일때
+					if(optionsType === 'element' || optionsType === 'array') {
+						optionsType = 'object';
+					}
 				}
 
 				//객체 또는 요소일때
@@ -44,7 +48,7 @@ try {
 					}
 
 					//배열이거나 제이쿼리 요소일때
-					if(elementType === 'array' || (typeof $ === 'function' && element instanceof $)) {
+					if(elementType === 'array' || (hasJQuery && element instanceof $)) {
 						var checkedElement = [],
 							elementLength = element.length,
 							isIncludeWindow = (options.isIncludeWindow === true) ? true : false,
@@ -182,7 +186,7 @@ try {
 					settingsType = _getType(settings);
 
 				//슬릭이 있으면서 요소이면서 매개변수가 셋팅하거나 메소드거나 아무것도 없을때
-				if(_isSlick && _isElement($thisFirst) && (settingsType === 'object' || settingsType === 'string' || settingsType === 'undefined')) {
+				if(_isSlick && _isElement(thisFirst) && (settingsType === 'object' || settingsType === 'string' || settingsType === 'undefined')) {
 					//슬릭을 사용하면서 메소드가 아닐때
 					if($thisFirst.hasClass('slick-initialized') && settingsType !== 'string') {
 						$thisFirst.slick('unslick');
