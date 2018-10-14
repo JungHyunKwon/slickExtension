@@ -14,76 +14,80 @@ try {
 				_isLowIE = _userAgent.indexOf('msie 6.0') > -1 || _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
 
 			/**
-			 * @name 요소 또는 제이쿼리 요소 확인
+			 * @name 요소 확인
 			 * @since 2017-12-06
-			 * @param {window || document || element || jQueryElement} element
+			 * @param {object} options element || jQueryElement || {element : element || window || document || jQueryElement || array, isInPage : boolean, isIncludeWindow : boolean, isIncludeDocument : boolean, isMatch : boolean}
 			 * @return {boolean}
 			 */
-			function _isElement(element) {
-				var result = false;
+			function _isElement(options) {
+				var optionsType = _getType(options),
+					result = false;
+				
+				//요소이거나 배열일때
+				if(optionsType === 'element' || optionsType === 'array') {
+					options = {
+						element : options
+					};
 
-				/**
-				 * @name 요소확인
-				 * @since 2017-12-06
-				 * @param {window || document || element} element
-				 * @return {boolean}
-				 */
-				function isElement(element) {
-					var result = false;
-					
-					try {
-						result = document.documentElement.contains(element);
-					}catch(error) {
-						//console.error(error);
-					}
-
-					//window 또는 document일때
-					if(element === window || element === document) {
-						result = true;						
-					}
-
-					return result;
+					optionsType = 'object';
 				}
 
-				/**
-				 * @name 제이쿼리 요소확인
-				 * @since 2017-12-06
-				 * @param {jQueryElement || jQueryObject} element
-				 * @return {boolean}
-				 */
-				function isJQueryElement(element) {
-					var result = false;
+				//객체 또는 요소일때
+				if(optionsType === 'object') {
+					var element = options.element,
+						elementType = _getType(element);
+					
+					//window 또는 document 또는 요소일때
+					if(elementType === 'window' || elementType === 'document' || elementType === 'element') {
+						element = [element];
+						elementType = 'array';
+					}
 
-					//제이쿼리 객체일때
-					if(element instanceof $) {
-						var elementLength = element.length;
-						
-						result = [];
+					//배열이거나 제이쿼리 요소일때
+					if(elementType === 'array' || (typeof $ === 'function' && element instanceof $)) {
+						var checkedElement = [],
+							elementLength = element.length,
+							isIncludeWindow = (options.isIncludeWindow === true) ? true : false,
+							isIncludeDocument = (options.isIncludeDocument === true) ? true : false,
+							isInPage = (options.isInPage === true) ? true : false,
+							html = document.documentElement;
 
 						for(var i = 0; i < elementLength; i++) {
-							var elementI = element[i];
+							var elementI = element[i],
+								elementIType = _getType(elementI),
+								isElement = false;
 
-							if(isElement(elementI)) {
-								result.push(elementI);
+							//요소이거나 window이면서 window를 포함시키는 옵션을 허용했거나 document이면서 document를 포함시키는 옵션을 허용했을때
+							if(elementIType === 'element' || (elementIType === 'window' && isIncludeWindow) || (elementIType === 'document' && isIncludeDocument)) {
+								//요소이면서 페이지안에 존재여부를 허용했을때
+								if(elementIType === 'element' && isInPage) {
+									isElement = html.contains(elementI);
+								}else{
+									isElement = true;
+								}
+							}
+
+							//요소일때
+							if(isElement) {
+								checkedElement.push(elementI);
 							}
 						}
 
-						var resultLength = result.length;
-
-						//제이쿼리 요소일때
-						if(resultLength && elementLength === resultLength) {
-							result = true;
-						}else{
-							result = false;
+						var checkedElementLength = checkedElement.length;
+						
+						//결과가 있을때
+						if(checkedElementLength) {
+							//일치를 허용했을때
+							if(options.isMatch === true) {
+								//요소갯수와 결과갯수가 같을때
+								if(elementLength === checkedElementLength) {
+									result = true;
+								}
+							}else{
+								result = true;
+							}
 						}
 					}
-
-					return result;
-				}
-				
-				//window 또는 document 또는 요소 또는 제이쿼리 요소일때
-				if(isElement(element) || isJQueryElement(element)) {
-					result = true;
 				}
 
 				return result;
