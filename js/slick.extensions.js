@@ -21,17 +21,18 @@ try {
 			 */
 			function _isElement(options) {
 				var optionsType = _getType(options),
-					hasJQuery = (typeof $ === 'function') ? true : false,
+					hasJQuery = typeof $ === 'function',
+					isElementOrArrayType = optionsType === 'element' || optionsType === 'array',
 					result = false;
 				
 				//요소이거나 배열이거나 제이쿼리 요소일때
-				if(optionsType === 'element' || optionsType === 'array' || (hasJQuery && options)) {
+				if(isElementOrArrayType || (hasJQuery && options)) {
 					options = {
 						element : options
 					};
 					
 					//요소이거나 배열일때
-					if(optionsType === 'element' || optionsType === 'array') {
+					if(isElementOrArrayType) {
 						optionsType = 'object';
 					}
 				}
@@ -51,20 +52,21 @@ try {
 					if(elementType === 'array' || (hasJQuery && element instanceof $)) {
 						var checkedElement = [],
 							elementLength = element.length,
-							isIncludeWindow = (options.isIncludeWindow === true) ? true : false,
-							isIncludeDocument = (options.isIncludeDocument === true) ? true : false,
-							isInPage = (options.isInPage === true) ? true : false,
+							isIncludeWindow = options.isIncludeWindow === true,
+							isIncludeDocument = options.isIncludeDocument === true,
+							isInPage = options.isInPage === true,
 							html = document.documentElement;
 
 						for(var i = 0; i < elementLength; i++) {
 							var elementI = element[i],
 								elementIType = _getType(elementI),
+								isElementType = elementIType === 'element',
 								isElement = false;
 
 							//요소이거나 window이면서 window를 포함시키는 옵션을 허용했거나 document이면서 document를 포함시키는 옵션을 허용했을때
-							if(elementIType === 'element' || (elementIType === 'window' && isIncludeWindow) || (elementIType === 'document' && isIncludeDocument)) {
+							if(isElementType || (elementIType === 'window' && isIncludeWindow) || (elementIType === 'document' && isIncludeDocument)) {
 								//요소이면서 페이지안에 존재여부를 허용했을때
-								if(elementIType === 'element' && isInPage) {
+								if(isElementType && isInPage) {
 									isElement = html.contains(elementI);
 								}else{
 									isElement = true;
@@ -159,15 +161,25 @@ try {
 			 */
 			function _copyType(value) {
 				var valueType = _getType(value),
-					result = value;
+					result = {};
 
 				//객체일때
 				if(valueType === 'object') {
-					result = $.extend(true, {}, value);
-				
+					//제이쿼리가 함수일때
+					if(typeof $ === 'function') {
+						result = $.extend(true, {}, value);
+					}else{
+						for(var i in value) {
+							if(value.hasOwnProperty(i)) {
+								result[i] = _copyType(value[i]);
+							}
+						}
+					}
 				//배열일때
 				}else if(valueType === 'array') {
 					result = value.slice();
+				}else{
+					result = value;
 				}
 
 				return result;
@@ -183,17 +195,19 @@ try {
 				var $thisFirst = this.first(),
 					thisFirst = $thisFirst[0],
 					settings = _copyType(options),
-					settingsType = _getType(settings);
+					settingsType = _getType(settings),
+					isSettingsObject = settingsType === 'object',
+					isSettingsString = settingsType === 'string';
 
 				//슬릭이 있으면서 요소이면서 매개변수가 셋팅하거나 메소드거나 아무것도 없을때
-				if(_isSlick && _isElement(thisFirst) && (settingsType === 'object' || settingsType === 'string' || settingsType === 'undefined')) {
+				if(_isSlick && _isElement(thisFirst) && (isSettingsObject || isSettingsString || settingsType === 'undefined')) {
 					//슬릭을 사용하면서 메소드가 아닐때
-					if($thisFirst.hasClass('slick-initialized') && settingsType !== 'string') {
+					if($thisFirst.hasClass('slick-initialized') && !isSettingsString) {
 						$thisFirst.slick('unslick');
 					}
 
 					//객체일때
-					if(settingsType === 'object') {
+					if(isSettingsObject) {
 						settings.autoArrow = $(settings.autoArrow);
 						settings.playArrow = $(settings.playArrow);
 						settings.pauseArrow = $(settings.pauseArrow);
@@ -328,7 +342,7 @@ try {
 					_slick.call($thisFirst, settings);
 
 					//객체일때
-					if(settingsType === 'object') {
+					if(isSettingsObject) {
 						var slick = thisFirst.slick,
 							slickOptions = getSlickOptions();
 
