@@ -354,8 +354,9 @@ try {
 						$thisFirst.triggerHandler('breakpoint.slickExtensions');
 
 						//이벤트 제거
-						settings.$prevArrow.off('click.slick');
-						settings.$nextArrow.off('click.slick');
+						settings.$prevArrow.off('click.slick').css('display', '');
+						settings.$nextArrow.off('click.slick').css('display', '');
+						settings.$dots.css('display', '');
 
 						//자동재생을 허용했을 때
 						if(settings.autoplay === true) {
