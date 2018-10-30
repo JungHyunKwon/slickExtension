@@ -280,6 +280,11 @@ try {
 						
 						//셋팅되었을 때, 슬라이드가 넘어갔을 때
 						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, slick, currentSlide, nextSlide) {
+							//슬릭이 없을 때
+							if(!slick) {
+								slick = {};
+							}
+
 							var current = nextSlide,
 								total = slick.slideCount;
 
