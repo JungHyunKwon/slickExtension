@@ -237,7 +237,7 @@ try {
 							//슬라이드 갯수가 2개 이상일 때
 							if(slick.$slides.length > 1) {
 								$thisFirst.slick('slickPlay');
-								settings.autoArrow.removeClass('active').text(settings.pauseText);
+								settings.autoArrow.addClass('pause').removeClass('play').text(settings.pauseText);
 							}else{
 								pause();
 							}
@@ -249,7 +249,7 @@ try {
 						 */
 						function pause() {
 							$thisFirst.slick('slickPause');
-							settings.autoArrow.addClass('active').text(settings.playText);
+							settings.autoArrow.addClass('play').removeClass('pause').text(settings.playText);
 						}
 						
 						/**
