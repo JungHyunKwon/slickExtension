@@ -192,7 +192,8 @@ try {
 			 * @return {jqueryElement}
 			 */
 			$.fn.slick = function(options) {
-				var $thisFirst = this.first(),
+				var result = this,
+					$thisFirst = result.first(),
 					thisFirst = $thisFirst[0],
 					settings = _copyType(options),
 					settingsType = _getType(settings),
@@ -200,7 +201,7 @@ try {
 					isSettingsString = settingsType === 'string';
 
 				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청이거나 아무것도 없을 때
-				if(_isSlick && _isElement(thisFirst) && (isSettingsObject || isSettingsString || settingsType === 'undefined')) {
+				if(_isSlick && _isElement(thisFirst) && (isSettingsObject || isSettingsString)) {
 					//슬릭을 사용하면서 메서드가 아닐 때
 					if($thisFirst.hasClass('slick-initialized') && !isSettingsString) {
 						$thisFirst.slick('unslick');
@@ -344,7 +345,7 @@ try {
 					}
 
 					//슬릭 적용
-					_slick.call($thisFirst, settings);
+					result = _slick.call($thisFirst, settings);
 
 					//객체일 때
 					if(isSettingsObject) {
@@ -422,7 +423,7 @@ try {
 					}
 				}
 
-				return $thisFirst;
+				return result;
 			};
 		}else{
 			throw '제이쿼리가 없습니다.';
