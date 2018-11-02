@@ -202,8 +202,10 @@ try {
 
 				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청이거나 아무것도 없을 때
 				if(_isSlick && _isElement(thisFirst) && (isSettingsObject || isSettingsString)) {
+					var slick = thisFirst.slick;
+
 					//슬릭을 사용하면서 메서드가 아닐 때
-					if($thisFirst.hasClass('slick-initialized') && !isSettingsString) {
+					if(slick && !isSettingsString) {
 						$thisFirst.slick('unslick');
 					}
 
@@ -349,8 +351,10 @@ try {
 
 					//객체일 때
 					if(isSettingsObject) {
-						var slick = thisFirst.slick,
-							slickOptions = getSlickOptions();
+						//갱신
+						slick = thisFirst.slick;
+
+						var slickOptions = getSlickOptions();
 
 						settings.$prevArrow = slick.$prevArrow || $();
 						settings.$nextArrow = slick.$nextArrow || $();
