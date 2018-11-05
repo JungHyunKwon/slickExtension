@@ -183,20 +183,20 @@ try {
 					thisFirst = $thisFirst[0],
 					settings = _copyType(options),
 					settingsType = _getType(settings),
-					isSettingsObject = settingsType === 'object',
-					isSettingsString = settingsType === 'string';
+					isObject = settingsType === 'object',
+					isString = settingsType === 'string';
 
 				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청이거나 아무것도 없을 때
-				if(_isSlick && _isElement(thisFirst) && (isSettingsObject || isSettingsString)) {
+				if(_isSlick && _isElement(thisFirst) && (isObject || isString)) {
 					var slick = thisFirst.slick;
 
 					//슬릭을 사용하면서 메서드가 아닐 때
-					if(slick && !isSettingsString) {
+					if(slick && !isString) {
 						$thisFirst.slick('unslick');
 					}
 
 					//객체일 때
-					if(isSettingsObject) {
+					if(isObject) {
 						settings.autoArrow = $(settings.autoArrow);
 						settings.playArrow = $(settings.playArrow);
 						settings.pauseArrow = $(settings.pauseArrow);
@@ -337,7 +337,7 @@ try {
 					result = _slick.apply($thisFirst, arguments);
 
 					//객체일 때
-					if(isSettingsObject) {
+					if(isObject) {
 						//갱신
 						slick = thisFirst.slick;
 
