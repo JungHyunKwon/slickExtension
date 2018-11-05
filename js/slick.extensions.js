@@ -21,76 +21,66 @@ try {
 			 */
 			function _isElement(options) {
 				var optionsType = _getType(options),
-					hasJQuery = typeof window.jQuery === 'function',
-					isElementOrArrayType = optionsType === 'element' || optionsType === 'array',
 					result = false;
-				
-				//요소이거나 배열이거나 제이쿼리 요소일 때
-				if(isElementOrArrayType || (hasJQuery && options)) {
-					options = {
-						element : options
-					};
-					
-					//요소이거나 배열일 때
-					if(isElementOrArrayType) {
-						optionsType = 'object';
-					}
-				}
 
-				//객체 또는 요소일 때
-				if(optionsType === 'object') {
-					var element = options.element,
+				//요소이거나 배열이거나 객체일 때
+				if(optionsType === 'element' || optionsType === 'array' || optionsType === 'object') {
+					var element = options.element || options,
 						elementType = _getType(element);
-					
+
 					//window 또는 document 또는 요소일 때
 					if(elementType === 'window' || elementType === 'document' || elementType === 'element') {
 						element = [element];
 						elementType = 'array';
 					}
+					
+					//배열 또는 객체일 때
+					if(elementType === 'array' || elementType === 'object') {
+						var elementLength = element.length;
+						
+						//요소 갯수가 있을 때
+						if(elementLength) {
+							var checkedElement = [],
+								isIncludeWindow = options.isIncludeWindow === true,
+								isIncludeDocument = options.isIncludeDocument === true,
+								isInPage = options.isInPage === true,
+								html = document.documentElement;
 
-					//배열이거나 제이쿼리 요소일 때
-					if(elementType === 'array' || (hasJQuery && element instanceof $)) {
-						var checkedElement = [],
-							elementLength = element.length,
-							isIncludeWindow = options.isIncludeWindow === true,
-							isIncludeDocument = options.isIncludeDocument === true,
-							isInPage = options.isInPage === true,
-							html = document.documentElement;
+							for(var i = 0; i < elementLength; i++) {
+								var elementI = element[i],
+									elementIType = _getType(elementI),
+									isElementI = elementIType === 'element',
+									isElement = false;
 
-						for(var i = 0; i < elementLength; i++) {
-							var elementI = element[i],
-								elementIType = _getType(elementI),
-								isElementType = elementIType === 'element',
-								isElement = false;
+								//요소이거나 window이면서 window를 포함시키는 옵션을 허용했거나 document이면서 document를 포함시키는 옵션을 허용했을 때
+								if(isElementI || (elementIType === 'window' && isIncludeWindow) || (elementIType === 'document' && isIncludeDocument)) {
+									//요소이면서 페이지안에 존재 여부를 허용했을 때
+									if(isElementI && isInPage) {
+										isElement = html.contains(elementI);
+									}else{
+										isElement = true;
+									}
+								}
 
-							//요소이거나 window이면서 window를 포함시키는 옵션을 허용했거나 document이면서 document를 포함시키는 옵션을 허용했을 때
-							if(isElementType || (elementIType === 'window' && isIncludeWindow) || (elementIType === 'document' && isIncludeDocument)) {
-								//요소이면서 페이지안에 존재 여부를 허용했을 때
-								if(isElementType && isInPage) {
-									isElement = html.contains(elementI);
-								}else{
-									isElement = true;
+								//요소일때
+								if(isElement) {
+									checkedElement.push(elementI);
 								}
 							}
 
-							//요소일 때
-							if(isElement) {
-								checkedElement.push(elementI);
-							}
-						}
-
-						var checkedElementLength = checkedElement.length;
-						
-						//결과가 있을 때
-						if(checkedElementLength) {
-							//일치를 허용했을 때
-							if(options.isMatch === true) {
-								//요소갯수와 결과갯수가 같을 때
-								if(elementLength === checkedElementLength) {
+							var checkedElementLength = checkedElement.length;
+							
+							//결과가 있을 때
+							if(checkedElementLength) {
+								//일치를 허용했을 때
+								if(options.isMatch === true) {
+									//요소갯수와 결과갯수가 같을 때
+									if(elementLength === checkedElementLength) {
+										result = true;
+									}
+								}else{
 									result = true;
 								}
-							}else{
-								result = true;
 							}
 						}
 					}
@@ -110,7 +100,7 @@ try {
 				
 				//매개변수가 있을 때
 				if(arguments.length) {
-					//null일 때
+					//null일때
 					if(value === null) {
 						result = 'null';
 					
@@ -134,7 +124,7 @@ try {
 							}else if(!isFinite(value)) {
 								result = value.toString();
 							}
-							
+						
 						//콘솔일 때
 						}else if(result === 'console') {
 							result = 'object';
@@ -165,16 +155,12 @@ try {
 
 				//객체일 때
 				if(valueType === 'object') {
-					//제이쿼리가 함수일 때
-					if(typeof window.jQuery === 'function') {
-						result = $.extend(true, {}, value);
-					}else{
-						for(var i in value) {
-							if(value.hasOwnProperty(i)) {
-								result[i] = _copyType(value[i]);
-							}
+					for(var i in value) {
+						if(value.hasOwnProperty(i)) {
+							result[i] = _copyType(value[i]);
 						}
 					}
+
 				//배열일 때
 				}else if(valueType === 'array') {
 					result = value.slice();
@@ -279,8 +265,9 @@ try {
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slick) {
 							settings.autoArrow.add(settings.playArrow).add(settings.pauseArrow).add(settings.$prevArrow).add(settings.$nextArrow).off('click.slickExtensions');
+							settings.current.add(settings.total).text(0);
 							$thisFirst.off('keydown.slickExtensions');
-						
+
 						//셋팅되었을 때, 슬라이드가 넘어갔을 때
 						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, slick, currentSlide, nextSlide) {
 							//슬릭이 없을 때
@@ -347,7 +334,7 @@ try {
 					}
 
 					//슬릭 적용
-					result = _slick.call($thisFirst, settings);
+					result = _slick.apply($thisFirst, arguments);
 
 					//객체일 때
 					if(isSettingsObject) {
