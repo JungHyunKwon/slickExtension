@@ -38,7 +38,7 @@ try {
 					if(elementType === 'array' || elementType === 'object') {
 						var elementLength = element.length;
 						
-						//요소 갯수가 있을 때
+						//요소 개수가 있을 때
 						if(elementLength) {
 							var checkedElement = [],
 								isIncludeWindow = options.isIncludeWindow === true,
@@ -74,7 +74,7 @@ try {
 							if(checkedElementLength) {
 								//일치를 허용했을 때
 								if(options.isMatch === true) {
-									//요소갯수와 결과갯수가 같을 때
+									//요소개수와 결과개수가 같을 때
 									if(elementLength === checkedElementLength) {
 										result = true;
 									}
@@ -188,7 +188,8 @@ try {
 
 				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청이거나 아무것도 없을 때
 				if(_isSlick && _isElement(thisFirst) && (isObject || isString)) {
-					var slick = thisFirst.slick;
+					var settings = _copyType(options),
+						slick = thisFirst.slick;
 
 					//슬릭을 사용하면서 메서드가 아닐 때
 					if(slick && !isString) {
@@ -218,12 +219,22 @@ try {
 							settings.pauseText = 'pause';
 						}
 
+						settings.initialSlide = parseInt(settings.initialSlide, 10) || 0;
+						
+						//슬라이드 개수 보다 지정 슬라이드 값이 클 때
+						if(settings.initialSlide > $thisFirst.children().length) {
+							settings.initialSlide = 0;
+						}
+						
+						//셋팅 변경
+						arguments[0] = settings;
+
 						/**
 						 * @name 재생
 						 * @since 2018-08-02
 						 */
 						function play() {
-							//슬라이드 갯수가 2개 이상일 때
+							//슬라이드 개수가 2개 이상일 때
 							if(slick.$slides.length > 1) {
 								$thisFirst.slick('slickPlay');
 								settings.autoArrow.addClass('pause').removeClass('play').text(settings.pauseText);
@@ -287,7 +298,7 @@ try {
 							if(current) {
 								current++;
 							}else{
-								//슬라이드 갯수가 있을 때
+								//슬라이드 개수가 있을 때
 								if(total) {
 									current = 1;
 								}else{
