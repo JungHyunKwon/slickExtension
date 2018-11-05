@@ -21,7 +21,7 @@ try {
 			 */
 			function _isElement(options) {
 				var optionsType = _getType(options),
-					hasJQuery = typeof $ === 'function',
+					hasJQuery = typeof window.jQuery === 'function',
 					isElementOrArrayType = optionsType === 'element' || optionsType === 'array',
 					result = false;
 				
@@ -166,7 +166,7 @@ try {
 				//객체일 때
 				if(valueType === 'object') {
 					//제이쿼리가 함수일 때
-					if(typeof $ === 'function') {
+					if(typeof window.jQuery === 'function') {
 						result = $.extend(true, {}, value);
 					}else{
 						for(var i in value) {
