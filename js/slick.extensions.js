@@ -274,6 +274,11 @@ try {
 							if(!slick) {
 								slick = {};
 							}
+							
+							//셋팅되었거나 재셋팅되었을 때
+							if(event.type === 'init' || event.type === 'reInit') {
+								nextSlide = slick.currentSlide;
+							}
 
 							var current = nextSlide,
 								total = slick.slideCount;
