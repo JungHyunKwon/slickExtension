@@ -186,10 +186,9 @@ try {
 					isObject = settingsType === 'object',
 					isString = settingsType === 'string';
 
-				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청이거나 아무것도 없을 때
+				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청일 때
 				if(_isSlick && _isElement(thisFirst) && (isObject || isString)) {
-					var settings = _copyType(options),
-						slick = thisFirst.slick;
+					var slick = thisFirst.slick;
 
 					//슬릭을 사용하면서 메서드가 아닐 때
 					if(slick && !isString) {
@@ -198,11 +197,16 @@ try {
 
 					//객체일 때
 					if(isObject) {
-						settings.autoArrow = $(settings.autoArrow);
-						settings.playArrow = $(settings.playArrow);
-						settings.pauseArrow = $(settings.pauseArrow);
-						settings.total = $(settings.total);
-						settings.current = $(settings.current);
+						var slickOptions;
+						
+						//요소 정의
+						settings.$prevArrow = $(settings.prevArrow);
+						settings.$nextArrow = $(settings.nextArrow);
+						settings.$autoArrow = $(settings.autoArrow);
+						settings.$playArrow = $(settings.playArrow);
+						settings.$pauseArrow = $(settings.pauseArrow);
+						settings.$total = $(settings.total);
+						settings.$current = $(settings.current);
 
 						//ie6, 7, 8 브라우저를 대응하지 않을 때
 						if(_isLowIE && !settings.lowIE) {
@@ -235,9 +239,9 @@ try {
 						 */
 						function play() {
 							//슬라이드 개수가 2개 이상일 때
-							if(slick.$slides.length > 1) {
+							if(slick.slideCount > 1) {
 								$thisFirst.slick('slickPlay');
-								settings.autoArrow.addClass('pause').removeClass('play').text(settings.pauseText);
+								settings.$autoArrow.addClass('pause').removeClass('play').text(settings.pauseText);
 							}else{
 								pause();
 							}
@@ -249,7 +253,7 @@ try {
 						 */
 						function pause() {
 							$thisFirst.slick('slickPause');
-							settings.autoArrow.addClass('play').removeClass('pause').text(settings.playText);
+							settings.$autoArrow.addClass('play').removeClass('pause').text(settings.playText);
 						}
 						
 						/**
@@ -275,35 +279,23 @@ try {
 
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slick) {
-							settings.autoArrow.add(settings.playArrow).add(settings.pauseArrow).add(settings.$prevArrow).add(settings.$nextArrow).off('click.slickExtensions');
-							settings.current.add(settings.total).text(0);
+							settings.$autoArrow.add(settings.$playArrow).add(settings.$pauseArrow).add(settings.$prevArrow).add(settings.$nextArrow).off('click.slickExtensions');
+							settings.$current.add(settings.$total).text('');
 							$thisFirst.off('keydown.slickExtensions');
 
 						//셋팅되었을 때, 슬라이드가 넘어갔을 때
-						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, slick, currentSlide, nextSlide) {
+						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, s, currentSlide, nextSlide) {
 							//슬릭이 없을 때
-							if(!slick) {
-								slick = {};
+							if(!s) {
+								s = slick;
 							}
+
+							var current = s.currentSlide + 1,
+								total = s.slideCount;
 							
-							//셋팅되었거나 재셋팅되었을 때
-							if(event.type === 'init' || event.type === 'reInit') {
-								nextSlide = slick.currentSlide;
-							}
-
-							var current = nextSlide,
-								total = slick.slideCount;
-
-							//다음 슬라이드가 있을 때
-							if(current) {
-								current++;
-							}else{
-								//슬라이드 개수가 있을 때
-								if(total) {
-									current = 1;
-								}else{
-									current = 0;
-								}
+							//이벤트가 beforeChange일 때
+							if(event.type === 'beforeChange') {
+								current = nextSlide + 1;
 							}
 
 							//함수일 때
@@ -325,8 +317,8 @@ try {
 								total = customState.total || total;
 							}
 
-							settings.current.text(current);
-							settings.total.text(total);
+							settings.$current.text(current);
+							settings.$total.text(total);
 						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
 							//갱신
 							slickOptions = getSlickOptions();
@@ -350,21 +342,22 @@ try {
 					}
 
 					//슬릭 적용
-					result = _slick.apply($thisFirst, arguments);
+					try {
+						result = _slick.apply($thisFirst, arguments);
+					}catch(e) {
+						//throw e;
+					}
 
 					//객체일 때
 					if(isObject) {
-						//갱신
+						//슬릭 적용 후 갱신
 						slick = thisFirst.slick;
 
-						var slickOptions = getSlickOptions();
-
-						settings.$prevArrow = slick.$prevArrow || $();
-						settings.$nextArrow = slick.$nextArrow || $();
-						settings.$dots = slick.$dots || $();
-
-						//분기 이벤트 발생
+						//분기 이벤트 최초 실행
 						$thisFirst.triggerHandler('breakpoint.slickExtensions');
+
+						//도트 기입
+						settings.$dots = slick.$dots || $();
 
 						//이벤트 제거
 						settings.$prevArrow.off('click.slick');
@@ -375,7 +368,7 @@ try {
 						settings.$nextArrow.css('display', '');
 						settings.$dots.css('display', '');
 
-						//자동재생을 허용했을 때
+						//자동 재생을 허용했을 때
 						if(settings.autoplay === true) {
 							play();
 						}else{
@@ -383,19 +376,19 @@ try {
 						}
 
 						//자동 버튼
-						settings.autoArrow.on('click.slickExtensions', function(event) {
+						settings.$autoArrow.on('click.slickExtensions', function(event) {
 							toggle();
 							event.preventDefault();
 						});
 						
 						//재생 버튼
-						settings.playArrow.on('click.slickExtensions', function(event) {
+						settings.$playArrow.on('click.slickExtensions', function(event) {
 							play();
 							event.preventDefault();
 						});
 						
 						//일시정지 버튼
-						settings.pauseArrow.on('click.slickExtensions', function(event) {
+						settings.$pauseArrow.on('click.slickExtensions', function(event) {
 							pause();
 							event.preventDefault();
 						});
