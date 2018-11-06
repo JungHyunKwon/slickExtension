@@ -14,6 +14,60 @@ try {
 				_isLowIE = _userAgent.indexOf('msie 6.0') > -1 || _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
 
 			/**
+			 * @name 형태 얻기
+			 * @since 2017-12-06
+			 * @param {*} value
+			 * @return {string || undefined}
+			 */
+			function _getType(value) {
+				var result;
+				
+				//매개변수가 있을 때
+				if(arguments.length) {
+					//null일때
+					if(value === null) {
+						result = 'null';
+					
+					//undefined일 때
+					}else if(value === undefined) {
+						result = 'undefined';
+					}else{
+						result = Object.prototype.toString.call(value).toLowerCase().replace('[object ', '').replace(']', '');
+						
+						//Invalid Date일 때
+						if(result === 'date' && isNaN(new Date(value))) {
+							result = 'Invalid Date';
+						
+						//숫자일 때
+						}else if(result === 'number') {
+							//NaN일 때
+							if(isNaN(value)) {
+								result = 'NaN';
+							
+							//Infinity일 때
+							}else if(!isFinite(value)) {
+								result = value.toString();
+							}
+						
+						//콘솔일 때
+						}else if(result === 'console') {
+							result = 'object';
+						
+						//요소일 때
+						}else if(result.indexOf('element') > -1) {
+							result = 'element';
+						
+						//문서일 때
+						}else if(result.indexOf('document') > -1) {
+							result = 'document';
+						}
+					}
+				}
+
+				return result;
+			}
+
+			/**
 			 * @name 요소 확인
 			 * @since 2017-12-06
 			 * @param {object} options element || jQueryElement || {element : element || window || document || jQueryElement || array, isInPage : boolean, isIncludeWindow : boolean, isIncludeDocument : boolean, isMatch : boolean}
