@@ -21,11 +21,12 @@ try {
 			 */
 			function _isElement(options) {
 				var optionsType = _getType(options),
+					isObject = optionsType === 'object',
 					result = false;
 
 				//요소이거나 배열이거나 객체일 때
-				if(optionsType === 'element' || optionsType === 'array' || optionsType === 'object') {
-					var element = options.element || options,
+				if(optionsType === 'element' || optionsType === 'array' || isObject) {
+					var element = (isObject) ? options.element : options,
 						elementType = _getType(element);
 
 					//window 또는 document 또는 요소일 때
@@ -38,7 +39,7 @@ try {
 					if(elementType === 'array' || elementType === 'object') {
 						var elementLength = element.length;
 						
-						//요소 개수가 있을 때
+						//요소 갯수가 있을 때
 						if(elementLength) {
 							var checkedElement = [],
 								isIncludeWindow = options.isIncludeWindow === true,
@@ -74,7 +75,7 @@ try {
 							if(checkedElementLength) {
 								//일치를 허용했을 때
 								if(options.isMatch === true) {
-									//요소개수와 결과개수가 같을 때
+									//요소갯수와 결과갯수가 같을 때
 									if(elementLength === checkedElementLength) {
 										result = true;
 									}
@@ -82,60 +83,6 @@ try {
 									result = true;
 								}
 							}
-						}
-					}
-				}
-
-				return result;
-			}
-
-			/**
-			 * @name 형태 얻기
-			 * @since 2017-12-06
-			 * @param {*} value
-			 * @return {string || undefined}
-			 */
-			function _getType(value) {
-				var result;
-				
-				//매개변수가 있을 때
-				if(arguments.length) {
-					//null일때
-					if(value === null) {
-						result = 'null';
-					
-					//undefined일 때
-					}else if(value === undefined) {
-						result = 'undefined';
-					}else{
-						result = Object.prototype.toString.call(value).toLowerCase().replace('[object ', '').replace(']', '');
-						
-						//Invalid Date일 때
-						if(result === 'date' && isNaN(new Date(value))) {
-							result = 'Invalid Date';
-						
-						//숫자일 때
-						}else if(result === 'number') {
-							//NaN일 때
-							if(isNaN(value)) {
-								result = 'NaN';
-							
-							//Infinity일 때
-							}else if(!isFinite(value)) {
-								result = value.toString();
-							}
-						
-						//콘솔일 때
-						}else if(result === 'console') {
-							result = 'object';
-						
-						//요소일 때
-						}else if(result.indexOf('element') > -1) {
-							result = 'element';
-						
-						//문서일 때
-						}else if(result.indexOf('document') > -1) {
-							result = 'document';
 						}
 					}
 				}
