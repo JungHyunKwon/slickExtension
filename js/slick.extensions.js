@@ -21,12 +21,11 @@ try {
 			 */
 			function _isElement(options) {
 				var optionsType = _getType(options),
-					isObject = optionsType === 'object',
 					result = false;
 
 				//요소이거나 배열이거나 객체일 때
-				if(optionsType === 'element' || optionsType === 'array' || isObject) {
-					var element = (isObject) ? options.element : options,
+				if(optionsType === 'element' || optionsType === 'array' || optionsType === 'object') {
+					var element = options.element || options,
 						elementType = _getType(element);
 
 					//window 또는 document 또는 요소일 때
