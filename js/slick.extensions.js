@@ -70,7 +70,7 @@ try {
 			/**
 			 * @name 요소 확인
 			 * @since 2017-12-06
-			 * @param {object} options element || jQueryElement || {element : element || window || document || jQueryElement || array, isInPage : boolean, isIncludeWindow : boolean, isIncludeDocument : boolean, isMatch : boolean}
+			 * @param {element || array || object} options {element : element || window || document || object || array, isInPage : boolean, isIncludeWindow : boolean, isIncludeDocument : boolean, isMatch : boolean}
 			 * @return {boolean}
 			 */
 			function _isElement(options) {
@@ -174,14 +174,27 @@ try {
 			/**
 			 * @name slickExtensions
 			 * @since 2018-08-02
-			 * @param {object} options {lowIE : boolean, autoArrow : element || jQueryElement, playArrow : element || jQueryElement, pauseArrow : element || jQueryElement, pauseOnArrowClick : boolean, pauseOnDotsClick : boolean, pauseOnDirectionKeyPush : boolean, pauseOnSwipe : boolean, playText : string, pauseText : string, current : element || jQueryElement, total : element || jQueryElement, customState : function}
-			 * @return {jqueryElement}
+			 * @param {
+				   lowIE : boolean,
+				   autoArrow : element || jQueryElement,
+				   playArrow : element || jQueryElement,
+				   pauseArrow : element || jQueryElement,
+				   pauseOnArrowClick : boolean,
+				   pauseOnDotsClick : boolean,
+				   pauseOnDirectionKeyPush : boolean,
+				   pauseOnSwipe : boolean,
+				   playText : string,
+				   pauseText : string,
+				   current : element || jQueryElement,
+				   total : element || jQueryElement,
+				   customState : function
+			   }
 			 */
-			$.fn.slick = function(options) {
+			$.fn.slick = function() {
 				var result = this,
 					$thisFirst = result.first(),
 					thisFirst = $thisFirst[0],
-					settings = _copyType(options),
+					settings = _copyType(arguments[0]),
 					settingsType = _getType(settings),
 					isObject = settingsType === 'object',
 					isString = settingsType === 'string';
