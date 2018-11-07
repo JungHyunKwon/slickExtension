@@ -181,20 +181,20 @@ try {
 			 * @name slickExtensions
 			 * @since 2018-08-02
 			 * @param {
-				   lowIE : boolean,
-				   autoArrow : element || jQueryElement,
-				   playArrow : element || jQueryElement,
-				   pauseArrow : element || jQueryElement,
-				   pauseOnArrowClick : boolean,
-				   pauseOnDotsClick : boolean,
-				   pauseOnDirectionKeyPush : boolean,
-				   pauseOnSwipe : boolean,
-				   playText : string,
-				   pauseText : string,
-				   current : element || jQueryElement,
-				   total : element || jQueryElement,
-				   customState : function
-			   }
+			 *	   lowIE : boolean,
+			 *	   autoArrow : element || jQueryElement,
+			 *	   playArrow : element || jQueryElement,
+			 *	   pauseArrow : element || jQueryElement,
+			 *	   pauseOnArrowClick : boolean,
+			 *	   pauseOnDotsClick : boolean,
+			 *	   pauseOnDirectionKeyPush : boolean,
+			 *	   pauseOnSwipe : boolean,
+			 *	   playText : string,
+			 *	   pauseText : string,
+			 *	   current : element || jQueryElement,
+			 *	   total : element || jQueryElement,
+			 *	   customState : function
+			 * }
 			 */
 			$.fn.slick = function() {
 				var result = this,
