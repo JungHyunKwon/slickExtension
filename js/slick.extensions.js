@@ -70,7 +70,13 @@ try {
 			/**
 			 * @name 요소 확인
 			 * @since 2017-12-06
-			 * @param {element || array || object} options {element : element || window || document || object || array, isInPage : boolean, isIncludeWindow : boolean, isIncludeDocument : boolean, isMatch : boolean}
+			 * @param {element || array || object} options {
+				   element : element || window || document || object || array,
+				   isInPage : boolean,
+				   isIncludeWindow : boolean,
+				   isIncludeDocument : boolean,
+				   isMatch : boolean
+			   }
 			 * @return {boolean}
 			 */
 			function _isElement(options) {
