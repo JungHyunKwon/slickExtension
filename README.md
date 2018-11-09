@@ -6,7 +6,7 @@
 autoArrow | element \|\| jQueryElement | | | | 재생과 일시정지 토글 기능을 수행할 요소입니다.
 playArrow | element \|\| jQueryElement | | | | 재생 기능을 수행할 요소입니다.
 pauseArrow | element \|\| jQueryElement | | | | 일시정지 기능을 수행할 요소입니다.
-lowIE | boolean | false | | | ie6, 7, 8에서 반응형 사용 여부입니다.
+isRunOnLowIE | boolean | false | | | ie7, 8에서 반응형 사용 여부입니다.
 pauseOnArrowClick | boolean | false | | | 이전 또는 다음 버튼 클릭 후 일시정지 여부입니다.
 pauseOnDotsClick | boolean | false | | | 도트 클릭 후 일시정지 여부입니다.
 pauseOnDirectionKeyPush | boolean | false | | | 방향 키를 누른 후 일시정지 여부입니다.

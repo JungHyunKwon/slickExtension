@@ -11,177 +11,13 @@ try {
 			var _slick = $.fn.slick,
 				_isSlick = typeof _slick === 'function',
 				_userAgent = navigator.userAgent.toLowerCase(),
-				_isLowIE = _userAgent.indexOf('msie 6.0') > -1 || _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
-
-			/**
-			 * @name 형태 얻기
-			 * @since 2017-12-06
-			 * @param {*} value
-			 * @return {string || undefined}
-			 */
-			function _getType(value) {
-				var result;
-				
-				//매개변수가 있을 때
-				if(arguments.length) {
-					//null일때
-					if(value === null) {
-						result = 'null';
-					
-					//undefined일 때
-					}else if(value === undefined) {
-						result = 'undefined';
-					}else{
-						result = Object.prototype.toString.call(value).toLowerCase().replace('[object ', '').replace(']', '');
-						
-						//Invalid Date일 때
-						if(result === 'date' && isNaN(new Date(value))) {
-							result = 'Invalid Date';
-						
-						//숫자일 때
-						}else if(result === 'number') {
-							//NaN일 때
-							if(isNaN(value)) {
-								result = 'NaN';
-							
-							//Infinity일 때
-							}else if(!isFinite(value)) {
-								result = value.toString();
-							}
-						
-						//콘솔일 때
-						}else if(result === 'console') {
-							result = 'object';
-						
-						//요소일 때
-						}else if(result.indexOf('element') > -1) {
-							result = 'element';
-						
-						//문서일 때
-						}else if(result.indexOf('document') > -1) {
-							result = 'document';
-						}
-					}
-				}
-
-				return result;
-			}
-
-			/**
-			 * @name 요소 확인
-			 * @since 2017-12-06
-			 * @param {element || array || object} options {
-				   element : element || window || document || object || array,
-				   isInPage : boolean,
-				   isIncludeWindow : boolean,
-				   isIncludeDocument : boolean,
-				   isMatch : boolean
-			   }
-			 * @return {boolean}
-			 */
-			function _isElement(options) {
-				var optionsType = _getType(options),
-					result = false;
-
-				//요소이거나 배열이거나 객체일 때
-				if(optionsType === 'element' || optionsType === 'array' || optionsType === 'object') {
-					var element = options.element || options,
-						elementType = _getType(element);
-
-					//window 또는 document 또는 요소일 때
-					if(elementType === 'window' || elementType === 'document' || elementType === 'element') {
-						element = [element];
-						elementType = 'array';
-					}
-					
-					//배열 또는 객체일 때
-					if(elementType === 'array' || elementType === 'object') {
-						var elementLength = element.length;
-						
-						//요소 갯수가 있을 때
-						if(elementLength) {
-							var checkedElement = [],
-								isIncludeWindow = options.isIncludeWindow === true,
-								isIncludeDocument = options.isIncludeDocument === true,
-								isInPage = options.isInPage === true,
-								html = document.documentElement;
-
-							for(var i = 0; i < elementLength; i++) {
-								var elementI = element[i],
-									elementIType = _getType(elementI),
-									isElementI = elementIType === 'element',
-									isElement = false;
-
-								//요소이거나 window이면서 window를 포함시키는 옵션을 허용했거나 document이면서 document를 포함시키는 옵션을 허용했을 때
-								if(isElementI || (elementIType === 'window' && isIncludeWindow) || (elementIType === 'document' && isIncludeDocument)) {
-									//요소이면서 페이지안에 존재 여부를 허용했을 때
-									if(isElementI && isInPage) {
-										isElement = html.contains(elementI);
-									}else{
-										isElement = true;
-									}
-								}
-
-								//요소일때
-								if(isElement) {
-									checkedElement.push(elementI);
-								}
-							}
-
-							var checkedElementLength = checkedElement.length;
-							
-							//결과가 있을 때
-							if(checkedElementLength) {
-								//일치를 허용했을 때
-								if(options.isMatch === true) {
-									//요소갯수와 결과갯수가 같을 때
-									if(elementLength === checkedElementLength) {
-										result = true;
-									}
-								}else{
-									result = true;
-								}
-							}
-						}
-					}
-				}
-
-				return result;
-			}
-
-			/**
-			 * @name 자료형 복사
-			 * @since 2017-12-06
-			 * @param {*} value
-			 * @return {*}
-			 */
-			function _copyType(value) {
-				var valueType = _getType(value),
-					result = {};
-
-				//객체일 때
-				if(valueType === 'object') {
-					for(var i in value) {
-						if(value.hasOwnProperty(i)) {
-							result[i] = _copyType(value[i]);
-						}
-					}
-
-				//배열일 때
-				}else if(valueType === 'array') {
-					result = value.slice();
-				}else{
-					result = value;
-				}
-
-				return result;
-			}
+				_isLowIE = _userAgent.indexOf('msie 7.0') > -1 || _userAgent.indexOf('msie 8.0') > -1;
 
 			/**
 			 * @name slickExtensions
 			 * @since 2018-08-02
 			 * @param {
-			 *	   lowIE : boolean,
+			 *	   isRunOnLowIE : boolean,
 			 *	   autoArrow : element || jQueryElement,
 			 *	   playArrow : element || jQueryElement,
 			 *	   pauseArrow : element || jQueryElement,
@@ -201,13 +37,11 @@ try {
 				var result = this,
 					$thisFirst = result.first(),
 					thisFirst = $thisFirst[0],
-					settings = _copyType(arguments[0]),
-					settingsType = _getType(settings),
-					isObject = settingsType === 'object',
-					isString = settingsType === 'string';
+					settings = $.extend({}, arguments[0]),
+					isString = typeof settings === 'string';
 
 				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청일 때
-				if(_isSlick && _isElement(thisFirst) && (isObject || isString)) {
+				if(_isSlick && thisFirst && (settings || isString)) {
 					var slick = thisFirst.slick;
 
 					//슬릭을 사용하면서 메서드가 아닐 때
@@ -216,7 +50,7 @@ try {
 					}
 
 					//객체일 때
-					if(isObject) {
+					if(settings) {
 						var slickOptions;
 						
 						//요소 정의
@@ -229,8 +63,8 @@ try {
 						settings.$current = $(settings.current);
 
 						//ie6, 7, 8 브라우저를 대응하지 않을 때
-						if(_isLowIE && !settings.lowIE) {
-							delete settings.responsive;
+						if(_isLowIE && !settings.isRunOnLowIE) {
+							settings.responsive = undefined;
 						}
 
 						//문자가 아닐 때
@@ -326,7 +160,7 @@ try {
 								});
 
 								//객체가 아닐 때
-								if(_getType(customState) !== 'object') {
+								if(customState) {
 									customState = {
 										current : current,
 										total : total
@@ -369,7 +203,7 @@ try {
 					}
 
 					//객체일 때
-					if(isObject) {
+					if(settings) {
 						//슬릭 적용 후 갱신
 						slick = thisFirst.slick;
 
@@ -382,11 +216,6 @@ try {
 						//이벤트 제거
 						settings.$prevArrow.off('click.slick');
 						settings.$nextArrow.off('click.slick');
-						
-						//display 속성 제거
-						settings.$prevArrow.css('display', '');
-						settings.$nextArrow.css('display', '');
-						settings.$dots.css('display', '');
 
 						//자동 재생을 허용했을 때
 						if(settings.autoplay === true) {
