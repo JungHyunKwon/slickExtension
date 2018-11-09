@@ -180,17 +180,6 @@ try {
 						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
 							//갱신
 							slickOptions = getSlickOptions();
-							
-							//화
-							if(slickOptions.arrows) {
-								settings.$autoArrow.show(0);
-								settings.$playArrow.show(0);
-								settings.$pauseArrow.hide(0);
-							}else{
-								settings.$autoArrow.hide(0);
-								settings.$playArrow.hide(0);
-								settings.$pauseArrow.hide(0);
-							}
 						}).on('swipe.slickExtensions', function(event, slick, direction) {
 							//스와이프 했을 때 멈춤 여부
 							if(slickOptions.pauseOnSwipe === true) {
