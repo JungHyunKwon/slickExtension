@@ -37,22 +37,26 @@ try {
 				var result = this,
 					$thisFirst = result.first(),
 					thisFirst = $thisFirst[0],
-					settings = $.extend({}, arguments[0]),
+					settings = arguments[0],
 					isString = typeof settings === 'string';
+				
+				//문자가 아닐 때
+				if(!isString) {
+					settings = $.extend({}, settings);
+				}
 
-				//슬릭이 있으면서 요소이면서 매개변수가 세팅 요청이거나 메서도 요청일 때
-				if(_isSlick && thisFirst && (settings || isString)) {
-					var slick = thisFirst.slick;
-
-					//슬릭을 사용하면서 메서드가 아닐 때
-					if(slick && !isString) {
-						$thisFirst.slick('unslick');
-					}
-
+				//슬릭이 있으면서 요소이면서 매개변수가 세팅이 있을 떄
+				if(_isSlick && thisFirst && settings) {
 					//객체일 때
-					if(settings) {
-						var slickOptions;
+					if(!isString) {
+						var slick = thisFirst.slick,
+							slickOptions = {};
 						
+						//슬릭을 사용 중 일 때
+						if(slick) {
+							$thisFirst.slick('unslick');
+						}
+
 						//요소 정의
 						settings.$prevArrow = $(settings.prevArrow);
 						settings.$nextArrow = $(settings.nextArrow);
@@ -203,7 +207,7 @@ try {
 					}
 
 					//객체일 때
-					if(settings) {
+					if(!isString) {
 						//슬릭 적용 후 갱신
 						slick = thisFirst.slick;
 
