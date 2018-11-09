@@ -180,6 +180,17 @@ try {
 						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
 							//갱신
 							slickOptions = getSlickOptions();
+							
+							//화
+							if(slickOptions.arrows) {
+								settings.$autoArrow.show(0);
+								settings.$playArrow.show(0);
+								settings.$pauseArrow.hide(0);
+							}else{
+								settings.$autoArrow.hide(0);
+								settings.$playArrow.hide(0);
+								settings.$pauseArrow.hide(0);
+							}
 						}).on('swipe.slickExtensions', function(event, slick, direction) {
 							//스와이프 했을 때 멈춤 여부
 							if(slickOptions.pauseOnSwipe === true) {
@@ -220,6 +231,11 @@ try {
 						//이벤트 제거
 						settings.$prevArrow.off('click.slick');
 						settings.$nextArrow.off('click.slick');
+						
+						//display 초기화
+						settings.$dots.css('display', '');
+						settings.$prevArrow.css('display', '');
+						settings.$nextArrow.css('display', '');
 
 						//자동 재생을 허용했을 때
 						if(settings.autoplay === true) {
