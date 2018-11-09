@@ -31,7 +31,7 @@ try {
 			 *	   total : element || jQueryElement,
 			 *	   customState : function
 			 * }
-			 * @return {jQueryElement || jQueryObject}
+			 * @return {object || jQuery}
 			 */
 			$.fn.slick = function() {
 				var result = this,
