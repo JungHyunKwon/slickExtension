@@ -38,17 +38,18 @@ try {
 					$thisFirst = result.first(),
 					thisFirst = $thisFirst[0],
 					settings = arguments[0],
-					isString = typeof settings === 'string';
+					isString = typeof settings === 'string',
+					isObject = settings && typeof settings === 'object';
 				
-				//문자가 아닐 때
-				if(!isString) {
+				//세팅 요청일 때
+				if(isObject) {
 					settings = $.extend({}, settings);
 				}
 
-				//슬릭이 있으면서 요소이면서 매개변수가 세팅이 있을 떄
-				if(_isSlick && thisFirst && settings) {
+				//슬릭이 있으면서 요소가 있으면서 메서드 또는 세팅 요청일 때
+				if(_isSlick && thisFirst && (isString || isObject)) {
 					//객체일 때
-					if(!isString) {
+					if(isObject) {
 						var slick = thisFirst.slick,
 							slickOptions = {};
 						
@@ -64,7 +65,9 @@ try {
 						settings.$playArrow = $(settings.playArrow);
 						settings.$pauseArrow = $(settings.pauseArrow);
 						settings.$total = $(settings.total);
+						settings.totalText = settings.$total.text();
 						settings.$current = $(settings.current);
+						settings.currentText = settings.$current.text();
 
 						//ie6, 7, 8 브라우저를 대응하지 않을 때
 						if(_isLowIE && !settings.isRunOnLowIE) {
@@ -83,8 +86,10 @@ try {
 
 						settings.initialSlide = parseInt(settings.initialSlide, 10) || 0;
 						
+						settings.slideCount = $thisFirst.children().length;
+
 						//슬라이드 개수 보다 지정 슬라이드 값이 클 때
-						if(settings.initialSlide > $thisFirst.children().length) {
+						if(settings.initialSlide > settings.slideCount) {
 							settings.initialSlide = 0;
 						}
 						
@@ -132,24 +137,38 @@ try {
 						 * @since 2018-08-02
 						 */
 						function getSlickOptions() {
-							return $.extend(slick.breakpointSettings[slick.activeBreakpoint], slick.options) || {};
+							return $.extend(slick.options, slick.breakpointSettings[slick.activeBreakpoint]) || {};
 						}
 
 						//파괴되었을 때
-						$thisFirst.on('destroy.slickExtensions', function(event, slick) {
+						$thisFirst.on('destroy.slickExtensions', function(event, _slick) {
 							settings.$autoArrow.add(settings.$playArrow).add(settings.$pauseArrow).add(settings.$prevArrow).add(settings.$nextArrow).off('click.slickExtensions');
-							settings.$current.add(settings.$total).text('');
+							settings.$current.text(settings.currentText);
+							settings.$total.text(settings.totalText);
 							$thisFirst.off('keydown.slickExtensions');
 
 						//셋팅되었을 때, 슬라이드가 넘어갔을 때
-						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, s, currentSlide, nextSlide) {
+						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, _slick, currentSlide, nextSlide) {
 							//슬릭이 없을 때
-							if(!s) {
-								s = slick;
+							if(!_slick) {
+								_slick = slick || {
+									currentSlide : 0,
+									slideCount : settings.slideCount
+								};
+							}
+							
+							//현재 슬라이드가 없을 때
+							if(currentSlide === undefined) {
+								currentSlide = _slick.currentSlide;
+							}
+							
+							//다음 슬라이드가 없을 때
+							if(nextSlide === undefined) {
+								nextSlide = 0;
 							}
 
-							var current = s.currentSlide + 1,
-								total = s.slideCount;
+							var current = currentSlide + 1,
+								total = _slick.slideCount;
 							
 							//이벤트가 beforeChange일 때
 							if(event.type === 'beforeChange') {
@@ -164,7 +183,7 @@ try {
 								});
 
 								//객체가 아닐 때
-								if(customState) {
+								if(!customState) {
 									customState = {
 										current : current,
 										total : total
@@ -177,10 +196,10 @@ try {
 
 							settings.$current.text(current);
 							settings.$total.text(total);
-						}).on('breakpoint.slickExtensions', function(event, slick, breakpoint) {
+						}).on('breakpoint.slickExtensions', function(event, _slick, breakpoint) {
 							//갱신
 							slickOptions = getSlickOptions();
-						}).on('swipe.slickExtensions', function(event, slick, direction) {
+						}).on('swipe.slickExtensions', function(event, _slick, direction) {
 							//스와이프 했을 때 멈춤 여부
 							if(slickOptions.pauseOnSwipe === true) {
 								pause();
@@ -207,7 +226,7 @@ try {
 					}
 
 					//객체일 때
-					if(!isString) {
+					if(isObject) {
 						//슬릭 적용 후 갱신
 						slick = thisFirst.slick;
 
