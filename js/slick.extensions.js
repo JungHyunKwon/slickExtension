@@ -38,18 +38,17 @@ try {
 					$thisFirst = result.first(),
 					thisFirst = $thisFirst[0],
 					settings = arguments[0],
-					isString = typeof settings === 'string',
-					isObject = settings && typeof settings === 'object';
+					isString = typeof settings === 'string';
 				
-				//세팅 요청일 때
-				if(isObject) {
+				//객체일 때
+				if(!isString) {
 					settings = $.extend({}, settings);
 				}
 
 				//슬릭이 있으면서 요소가 있으면서 메서드 또는 세팅 요청일 때
-				if(_isSlick && thisFirst && (isString || isObject)) {
+				if(_isSlick && thisFirst) {
 					//객체일 때
-					if(isObject) {
+					if(!isString) {
 						var slick = thisFirst.slick,
 							slickOptions = {};
 						
@@ -226,7 +225,7 @@ try {
 					}
 
 					//객체일 때
-					if(isObject) {
+					if(!isString) {
 						//슬릭 적용 후 갱신
 						slick = thisFirst.slick;
 
