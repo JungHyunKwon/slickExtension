@@ -39,11 +39,6 @@ try {
 					thisFirst = $thisFirst[0],
 					settings = arguments[0],
 					isString = typeof settings === 'string';
-				
-				//객체일 때
-				if(!isString) {
-					settings = $.extend({}, settings);
-				}
 
 				//슬릭이 있으면서 요소가 있으면서 메서드 또는 세팅 요청일 때
 				if(_isSlick && thisFirst) {
@@ -51,11 +46,14 @@ try {
 					if(!isString) {
 						var slick = thisFirst.slick,
 							slickOptions = {};
-						
+
 						//슬릭을 사용 중 일 때
 						if(slick) {
 							$thisFirst.slick('unslick');
 						}
+						
+						//객체 생성
+						settings = $.extend({}, settings);
 
 						//요소 정의
 						settings.$prevArrow = $(settings.prevArrow);
