@@ -136,6 +136,9 @@ try {
 
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slk) {
+							var $nextArrow = slick.$nextArrow || jQueryObject,
+								$prevArrow = slick.$prevArrow || jQueryObject;
+
 							$autoArrow.add($playArrow).add($pauseArrow).add($prevArrow).add($nextArrow).off('click.slickExtensions');
 							$current.text(currentText);
 							$total.text(totalText);
@@ -167,7 +170,7 @@ try {
 							});
 
 							//도트 아이템을 사용할 때
-							if(settings.dots === true) {
+							if(slickOptions.dots === true) {
 								slick.$dots.css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 									//도트를 사용하고 도트를 눌렀을 때 멈춤 여부
 									if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
@@ -180,7 +183,7 @@ try {
 						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, slk, currentSlide, nextSlide) {
 							//현재 슬라이드가 없을 때
 							if(currentSlide === undefined) {
-								currentSlide = slick.currentSlide;
+								currentSlide = slick.currentSlide || 0;
 							}
 							
 							//다음 슬라이드가 없을 때
@@ -189,7 +192,7 @@ try {
 							}
 
 							var current = currentSlide + 1,
-								total = slick.slideCount;
+								total = slick.slideCount || 0;
 							
 							//이벤트가 beforeChange일 때
 							if(event.type === 'beforeChange') {
