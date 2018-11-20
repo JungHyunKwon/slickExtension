@@ -60,7 +60,9 @@ try {
 							currentText = $current.text(),
 							playText = settings.playText,
 							pauseText = settings.pauseText,
-							initialSlide = parseInt(settings.initialSlide, 10) || 0;
+							initialSlide = parseInt(settings.initialSlide, 10) || 0,
+							customState = settings.customState,
+							customStateIsFunction = typeof customState === 'function';
 
 						//슬릭을 사용 중 일 때
 						if(slick) {
@@ -200,22 +202,22 @@ try {
 							}
 
 							//함수일 때
-							if(typeof settings.customState === 'function') {
-								var customState = settings.customState({
+							if(customStateIsFunction) {
+								var result = customState({
 									current : current,
 									total : total
 								});
 
 								//객체가 아닐 때
-								if(!customState) {
-									customState = {
+								if(!result) {
+									result = {
 										current : current,
 										total : total
 									};
 								}
 
-								current = customState.current || current;
-								total = customState.total || total;
+								current = result.current || current;
+								total = result.total || total;
 							}
 
 							$current.text(current);
