@@ -45,52 +45,48 @@ try {
 
 					//객체일 때
 					if(!isString) {
-						//객체 생성
-						settings = $.extend({}, settings);
-
-						var slick = thisFirst.slick,
-							slickOptions = {},
-							jQueryObject = $(),
-							$autoArrow = $(settings.autoArrow),
-							$playArrow = $(settings.playArrow),
-							$pauseArrow = $(settings.pauseArrow),
-							$total = $(settings.total),
-							$current = $(settings.current),
-							totalText = $total.text(),
-							currentText = $current.text(),
-							playText = settings.playText,
-							pauseText = settings.pauseText,
-							initialSlide = parseInt(settings.initialSlide, 10) || 0,
-							customState = settings.customState,
-							customStateIsFunction = typeof customState === 'function';
+						var slick = thisFirst.slick;
 
 						//슬릭을 사용 중 일 때
 						if(slick) {
 							$thisFirst.slick('unslick');
 						}
 
+						//객체 생성
+						settings = $.extend({}, settings);
+						
+						//속성 정의
+						settings.autoArrow = $(settings.autoArrow);
+						settings.playArrow = $(settings.playArrow);
+						settings.pauseArrow = $(settings.pauseArrow);
+						settings.total = $(settings.total);
+						settings.totalText = settings.total.text();
+						settings.current = $(settings.current);
+						settings.currentText = settings.current.text();
+
 						//ie6, 7, 8 브라우저를 대응하지 않을 때
 						if(_isLowIE && !settings.isRunOnLowIE) {
+							settings._responsive = settings.responsive;
 							settings.responsive = undefined;
 						}
-	
-						//문자가 아닐 때
-						if(typeof playText !== 'string') {
-							playText = 'play';
-						}
 
-						//문자가 아닐 때
-						if(typeof pauseText !== 'string') {
-							pauseText = 'pause';
-						}
+						//셋팅 변경
+						arguments[0] = settings;
+					}
 
-						//슬라이드 개수 보다 지정 슬라이드 값이 클 때
-						if(initialSlide > $thisFirst.children().length) {
-							initialSlide = 0;
-						}
-						
-						//초기 슬라이드 값 기입
-						settings.initialSlide = initialSlide;
+					//슬릭 적용
+					try {
+						result = _slick.apply($thisFirst, arguments);
+					}catch(e) {
+						//throw e;
+					}
+
+					//객체일 때
+					if(!isString) {
+						//슬릭 적용 후 갱신
+						slick = $thisFirst.slick('getSlick');
+
+						var slickOptions = slick.options || {};
 
 						/**
 						 * @name 재생
@@ -100,7 +96,7 @@ try {
 							//슬라이드 개수가 2개 이상일 때
 							if(slick.slideCount > 1) {
 								$thisFirst.slick('slickPlay');
-								$autoArrow.addClass('pause').removeClass('play').text(pauseText);
+								$(slickOptions.autoArrow).addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
 							}else{
 								pause();
 							}
@@ -112,7 +108,7 @@ try {
 						 */
 						function pause() {
 							$thisFirst.slick('slickPause');
-							$autoArrow.addClass('play').removeClass('pause').text(playText);
+							$(slickOptions.autoArrow).addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
 						}
 						
 						/**
@@ -127,29 +123,36 @@ try {
 								pause();
 							}
 						}
-						
-						/**
-						 * @name 슬릭 옵션 얻기
-						 * @since 2018-08-02
-						 */
-						function getSlickOptions() {
-							return $.extend(slick.options, (slick.breakpointSettings || {})[slick.activeBreakpoint]) || {};
-						}
 
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slk) {
-							var $nextArrow = slick.$nextArrow || jQueryObject,
-								$prevArrow = slick.$prevArrow || jQueryObject;
-
-							$autoArrow.add($playArrow).add($pauseArrow).add($prevArrow).add($nextArrow).off('click.slickExtensions');
-							$current.text(currentText);
-							$total.text(totalText);
+							$(slickOptions.autoArrow).add(slickOptions.playArrow).add(slickOptions.pauseArrow).add(slick.prevArrow).add(slick.nextArrow).off('click.slickExtensions');
+							$(slickOptions.current).text(slickOptions.currentText);
+							$(slickOptions.total).text(slickOptions.totalText);
 							$thisFirst.off('keydown.slickExtensions');
 
-						//셋팅되었을 때, 셋팅이 변경되었을 때
-						}).on('init.slickExtensions reInit.slickExtensions', function(event, slk) {
-							var $nextArrow = slick.$nextArrow || jQueryObject,
-								$prevArrow = slick.$prevArrow || jQueryObject;
+						//셋팅이 변경되었을 때
+						}).on('reInit.slickExtensions', function(event, slk) {
+							var $prevArrow = $(slick.$prevArrow),
+								$nextArrow = $(slick.$nextArrow);
+
+							//자동 버튼
+							$(slickOptions.autoArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+								toggle();
+								event.preventDefault();
+							});
+							
+							//재생 버튼
+							$(slickOptions.playArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+								play();
+								event.preventDefault();
+							});
+							
+							//일시정지 버튼
+							$(slickOptions.pauseArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+								pause();
+								event.preventDefault();
+							});
 
 							//이전, 재생 버튼
 							$prevArrow.add($nextArrow).css('display', '').off('click.slick click.slickExtensions').on('click.slickExtensions', function(event) {
@@ -173,7 +176,7 @@ try {
 
 							//도트 아이템을 사용할 때
 							if(slickOptions.dots === true) {
-								slick.$dots.css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+								$(slick.$dots).css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 									//도트를 사용하고 도트를 눌렀을 때 멈춤 여부
 									if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
 										pause();
@@ -181,11 +184,13 @@ try {
 								});
 							}
 
-						//셋팅되었을 때, 셋팅이 변경되었을 때, 슬라이드가 넘어갔을 때
-						}).on('init.slickExtensions reInit.slickExtensions beforeChange.slickExtensions', function(event, slk, currentSlide, nextSlide) {
+						//셋팅이 변경되었을 때, 슬라이드가 넘어갔을 때
+						}).on('reInit.slickExtensions beforeChange.slickExtensions', function(event, slk, currentSlide, nextSlide) {
+							var customState = slickOptions.customState;
+
 							//현재 슬라이드가 없을 때
 							if(currentSlide === undefined) {
-								currentSlide = slick.currentSlide || 0;
+								currentSlide = slick.currentSlide;
 							}
 							
 							//다음 슬라이드가 없을 때
@@ -194,7 +199,7 @@ try {
 							}
 
 							var current = currentSlide + 1,
-								total = slick.slideCount || 0;
+								total = slick.slideCount;
 							
 							//이벤트가 beforeChange일 때
 							if(event.type === 'beforeChange') {
@@ -202,7 +207,7 @@ try {
 							}
 
 							//함수일 때
-							if(customStateIsFunction) {
+							if(typeof customState === 'function') {
 								var result = customState({
 									current : current,
 									total : total
@@ -220,11 +225,8 @@ try {
 								total = result.total || total;
 							}
 
-							$current.text(current);
-							$total.text(total);
-						}).on('breakpoint.slickExtensions', function(event, slk, breakpoint) {
-							//갱신
-							slickOptions = getSlickOptions();
+							$(slickOptions.current).text(current);
+							$(slickOptions.total).text(total);
 						}).on('swipe.slickExtensions', function(event, slk, direction) {
 							//스와이프 했을 때 멈춤 여부
 							if(slickOptions.pauseOnSwipe === true) {
@@ -235,32 +237,13 @@ try {
 							if(slickOptions.pauseOnDirectionKeyPush === true) {
 								var tagName = this.tagName.toLowerCase(),
 									keyCode = event.keyCode || event.which;
-								
-								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀거나 verticalSwiping 기능을 사용 중이면서 ↑ 또는 ↓를 눌렀을 때
-								if(slickOptions.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && ((keyCode === 37 || keyCode === 39) || slickOptions.verticalSwiping && (keyCode === 38 || keyCode === 40))) {
+
+								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀을 때
+								if(slickOptions.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && (keyCode === 37 || keyCode === 39)) {
 									pause();
 								}
 							}
-						});
-
-						//셋팅 변경
-						arguments[0] = settings;
-					}
-
-					//슬릭 적용
-					try {
-						result = _slick.apply($thisFirst, arguments);
-					}catch(e) {
-						//throw e;
-					}
-
-					//객체일 때
-					if(!isString) {
-						//슬릭 적용 후 갱신
-						slick = thisFirst.slick || {};
-
-						//분기 이벤트 최초 실행
-						$thisFirst.triggerHandler('breakpoint.slickExtensions');
+						}).triggerHandler('reInit.slickExtensions');
 
 						//자동 재생을 허용했을 때
 						if(settings.autoplay === true) {
@@ -268,24 +251,6 @@ try {
 						}else{
 							pause();
 						}
-
-						//자동 버튼
-						$autoArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
-							toggle();
-							event.preventDefault();
-						});
-						
-						//재생 버튼
-						$playArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
-							play();
-							event.preventDefault();
-						});
-						
-						//일시정지 버튼
-						$pauseArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
-							pause();
-							event.preventDefault();
-						});
 					}
 				}
 
