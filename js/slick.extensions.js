@@ -95,7 +95,7 @@ try {
 						function play() {
 							//슬라이드 개수가 2개 이상일 때
 							if(slick.slideCount > 1) {
-								$thisFirst.slick('slickPlay');
+								slick.$slider.slick('slickPlay');
 								slickOptions.autoArrow.addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
 							}else{
 								pause();
@@ -107,7 +107,7 @@ try {
 						 * @since 2018-08-02
 						 */
 						function pause() {
-							$thisFirst.slick('slickPause');
+							slick.$slider.slick('slickPause');
 							slickOptions.autoArrow.addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
 						}
 						
@@ -192,13 +192,13 @@ try {
 
 							//이전 버튼
 							$prevArrow.on('click.slickExtensions', function(event) {
-								$thisFirst.slick('slickPrev');
+								slick.$slider.slick('slickPrev');
 								event.preventDefault();
 							});
 							
 							//다음 버튼
 							$nextArrow.on('click.slickExtensions', function(event) {
-								$thisFirst.slick('slickNext');
+								slick.$slider.slick('slickNext');
 								event.preventDefault();
 							});
 
