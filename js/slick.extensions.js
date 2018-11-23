@@ -96,7 +96,7 @@ try {
 							//슬라이드 개수가 2개 이상일 때
 							if(slick.slideCount > 1) {
 								$thisFirst.slick('slickPlay');
-								$(slickOptions.autoArrow).addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
+								slickOptions.autoArrow.addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
 							}else{
 								pause();
 							}
@@ -108,7 +108,7 @@ try {
 						 */
 						function pause() {
 							$thisFirst.slick('slickPause');
-							$(slickOptions.autoArrow).addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
+							slickOptions.autoArrow.addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
 						}
 						
 						/**
@@ -126,30 +126,58 @@ try {
 
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slk) {
-							$(slickOptions.autoArrow).add(slickOptions.playArrow).add(slickOptions.pauseArrow).add(slick.prevArrow).add(slick.nextArrow).off('click.slickExtensions');
-							$(slickOptions.current).text(slickOptions.currentText);
-							$(slickOptions.total).text(slickOptions.totalText);
+							slickOptions.autoArrow.add(slickOptions.playArrow).add(slickOptions.pauseArrow).add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
+							slickOptions.current.text(slickOptions.currentText);
+							slickOptions.total.text(slickOptions.totalText);
 							$thisFirst.off('keydown.slickExtensions');
+
+						//슬라이드가 넘어갔을 때
+						}).on('afterChange.slickExtensions', function(event, slk, currentSlide) {
+							var customState = slickOptions.customState,
+								total = slick.slideCount,
+								current = slick.currentSlide + 1;
+
+							//함수일 때
+							if(typeof customState === 'function') {
+								var result = customState({
+									current : current,
+									total : total
+								});
+
+								//객체가 아닐 때
+								if(!result) {
+									result = {
+										current : current,
+										total : total
+									};
+								}
+
+								current = result.current || current;
+								total = result.total || total;
+							}
+
+							slickOptions.current.text(current);
+							slickOptions.total.text(total);
 
 						//셋팅이 변경되었을 때
 						}).on('reInit.slickExtensions', function(event, slk) {
-							var $prevArrow = $(slick.$prevArrow),
-								$nextArrow = $(slick.$nextArrow);
+							var $prevArrow = slick.$prevArrow,
+								$nextArrow = slick.$nextArrow;
 
 							//자동 버튼
-							$(slickOptions.autoArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							slickOptions.autoArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								toggle();
 								event.preventDefault();
 							});
 							
 							//재생 버튼
-							$(slickOptions.playArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							slickOptions.playArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								play();
 								event.preventDefault();
 							});
 							
 							//일시정지 버튼
-							$(slickOptions.pauseArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							slickOptions.pauseArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								pause();
 								event.preventDefault();
 							});
@@ -176,7 +204,7 @@ try {
 
 							//도트 아이템을 사용할 때
 							if(slickOptions.dots === true) {
-								$(slick.$dots).css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+								slick.$dots.css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 									//도트를 사용하고 도트를 눌렀을 때 멈춤 여부
 									if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
 										pause();
@@ -184,49 +212,7 @@ try {
 								});
 							}
 
-						//셋팅이 변경되었을 때, 슬라이드가 넘어갔을 때
-						}).on('reInit.slickExtensions beforeChange.slickExtensions', function(event, slk, currentSlide, nextSlide) {
-							var customState = slickOptions.customState;
-
-							//현재 슬라이드가 없을 때
-							if(currentSlide === undefined) {
-								currentSlide = slick.currentSlide;
-							}
-							
-							//다음 슬라이드가 없을 때
-							if(nextSlide === undefined) {
-								nextSlide = 0;
-							}
-
-							var current = currentSlide + 1,
-								total = slick.slideCount;
-							
-							//이벤트가 beforeChange일 때
-							if(event.type === 'beforeChange') {
-								current = nextSlide + 1;
-							}
-
-							//함수일 때
-							if(typeof customState === 'function') {
-								var result = customState({
-									current : current,
-									total : total
-								});
-
-								//객체가 아닐 때
-								if(!result) {
-									result = {
-										current : current,
-										total : total
-									};
-								}
-
-								current = result.current || current;
-								total = result.total || total;
-							}
-
-							$(slickOptions.current).text(current);
-							$(slickOptions.total).text(total);
+							$thisFirst.triggerHandler('afterChange.slickExtensions');
 						}).on('swipe.slickExtensions', function(event, slk, direction) {
 							//스와이프 했을 때 멈춤 여부
 							if(slickOptions.pauseOnSwipe === true) {
