@@ -95,8 +95,8 @@ try {
 						function play() {
 							//슬라이드 개수가 2개 이상일 때
 							if(slick.slideCount > 1) {
-								slick.$slider.slick('slickPlay');
-								slickOptions.autoArrow.addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
+								$thisFirst.slick('slickPlay');
+								$(slickOptions.autoArrow).addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
 							}else{
 								pause();
 							}
@@ -107,8 +107,8 @@ try {
 						 * @since 2018-08-02
 						 */
 						function pause() {
-							slick.$slider.slick('slickPause');
-							slickOptions.autoArrow.addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
+							$thisFirst.slick('slickPause');
+							$(slickOptions.autoArrow).addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
 						}
 						
 						/**
@@ -126,9 +126,9 @@ try {
 
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slk) {
-							slickOptions.autoArrow.add(slickOptions.playArrow).add(slickOptions.pauseArrow).add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
-							slickOptions.current.text(slickOptions.currentText);
-							slickOptions.total.text(slickOptions.totalText);
+							$(slickOptions.autoArrow).add(slickOptions.playArrow).add(slickOptions.pauseArrow).add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
+							$(slickOptions.current).text(slickOptions.currentText);
+							$(slickOptions.total).text(slickOptions.totalText);
 							$thisFirst.off('keydown.slickExtensions');
 
 						//슬라이드가 넘어갔을 때
@@ -156,28 +156,28 @@ try {
 								total = result.total || total;
 							}
 
-							slickOptions.current.text(current);
-							slickOptions.total.text(total);
+							$(slickOptions.current).text(current);
+							$(slickOptions.total).text(total);
 
 						//셋팅이 변경되었을 때
 						}).on('reInit.slickExtensions', function(event, slk) {
-							var $prevArrow = slick.$prevArrow,
-								$nextArrow = slick.$nextArrow;
+							var $prevArrow = $(slick.$prevArrow),
+								$nextArrow = $(slick.$nextArrow);
 
 							//자동 버튼
-							slickOptions.autoArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$(slickOptions.autoArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								toggle();
 								event.preventDefault();
 							});
 							
 							//재생 버튼
-							slickOptions.playArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$(slickOptions.playArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								play();
 								event.preventDefault();
 							});
 							
 							//일시정지 버튼
-							slickOptions.pauseArrow.off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$(slickOptions.pauseArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								pause();
 								event.preventDefault();
 							});
@@ -192,19 +192,19 @@ try {
 
 							//이전 버튼
 							$prevArrow.on('click.slickExtensions', function(event) {
-								slick.$slider.slick('slickPrev');
+								$thisFirst.slick('slickPrev');
 								event.preventDefault();
 							});
 							
 							//다음 버튼
 							$nextArrow.on('click.slickExtensions', function(event) {
-								slick.$slider.slick('slickNext');
+								$thisFirst.slick('slickNext');
 								event.preventDefault();
 							});
 
 							//도트 아이템을 사용할 때
 							if(slickOptions.dots === true) {
-								slick.$dots.css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+								$(slick.$dots).css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 									//도트를 사용하고 도트를 눌렀을 때 멈춤 여부
 									if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
 										pause();
