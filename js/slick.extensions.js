@@ -165,23 +165,23 @@ try {
 								$nextArrow = $(slick.$nextArrow);
 
 							//자동 버튼
-							$(slickOptions.autoArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$(slickOptions.autoArrow).addClass('slick-arrow').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								toggle();
 								event.preventDefault();
 							});
 							
 							//재생 버튼
-							$(slickOptions.playArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$(slickOptions.playArrow).addClass('slick-arrow').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								play();
 								event.preventDefault();
 							});
 							
 							//일시정지 버튼
-							$(slickOptions.pauseArrow).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$(slickOptions.pauseArrow).addClass('slick-arrow').off('click.slickExtensions').on('click.slickExtensions', function(event) {
 								pause();
 								event.preventDefault();
 							});
-
+							
 							//이전, 재생 버튼
 							$prevArrow.add($nextArrow).css('display', '').off('click.slick click.slickExtensions').on('click.slickExtensions', function(event) {
 								//네비게이션을 눌렀을 때 멈춤 여부
@@ -189,6 +189,12 @@ try {
 									pause();
 								}
 							});
+							
+							//현재 요소
+							$(slickOptions.current).addClass('slick-text');
+
+							//합계 요소
+							$(slickOptions.total).addClass('slick-text');
 
 							//이전 버튼
 							$prevArrow.on('click.slickExtensions', function(event) {
