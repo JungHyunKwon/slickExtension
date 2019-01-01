@@ -64,7 +64,7 @@ try {
 						settings.current = $(settings.current);
 						settings.currentText = settings.current.text();
 
-						//ie6, 7, 8 브라우저를 대응하지 않을 때
+						//ie7, 8 브라우저를 대응하지 않을 때
 						if(_isLowIE && !settings.isRunOnLowIE) {
 							settings._responsive = settings.responsive;
 							settings.responsive = undefined;
@@ -93,8 +93,8 @@ try {
 						 * @since 2018-08-02
 						 */
 						function play() {
-							//슬라이드 개수가 2개 이상일 때
-							if(slick.slideCount > 1) {
+							//슬라이드 개수가 보이는 갯수 이상일 때
+							if(slick.slideCount > slickOptions.slidesToShow) {
 								$thisFirst.slick('slickPlay');
 								$(slickOptions.autoArrow).addClass('slick-pause').removeClass('slick-play').text(slickOptions.pauseText);
 							}else{
