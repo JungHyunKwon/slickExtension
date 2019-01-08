@@ -134,7 +134,7 @@ try {
 						//슬라이드가 넘어갔을 때
 						}).on('afterChange.slickExtensions', function(event, slk, currentSlide) {
 							var customState = slickOptions.customState,
-								total = slick.slideCount / slickOptions.slidesToShow || 0,
+								total = slick.slideCount / slickOptions.slidesToShow || slick.slideCount,
 								current = slick.currentSlide + 1;
 
 							//함수일 때
