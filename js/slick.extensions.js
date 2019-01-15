@@ -215,7 +215,7 @@ try {
 									if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
 										pause();
 									}
-								});
+								}).children('button').removeAttr('tabindex');
 							}
 
 							$thisFirst.triggerHandler('afterChange.slickExtensions');
