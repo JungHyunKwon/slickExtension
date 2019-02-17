@@ -21,5 +21,5 @@ customState | function | decimal | state | object[current : string \|\| number, 
 - 매개변수에 이상한 값이 올 경우 오류 제거
 - 코어 값에 이상한 값이 올 경우 오류 제거
 
-## kenwheeler/slick
+## kenwheeler
 <https://github.com/kenwheeler/slick>
