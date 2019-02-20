@@ -158,7 +158,6 @@ try {
 
 							$(slickOptions.current).text(current);
 							$(slickOptions.total).text(total);
-							$(slick.$dots).find('button').removeAttr('tabinedex');
 
 						//셋팅이 변경되었을 때, 분기가 변경되었을 때
 						}).on('reInit.slickExtensions breakpoint.slickExtensions', function(event, slk) {
