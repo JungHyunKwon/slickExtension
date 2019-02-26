@@ -41,10 +41,10 @@ try {
 
 				//슬릭이 있으면서 요소가 있으면서 메서드 또는 세팅 요청일 때
 				if(_hasSlick && thisFirst && settings) {
-					var isString = typeof settings === 'string';
+					var settingsIsString = typeof settings === 'string';
 
 					//객체일 때
-					if(!isString) {
+					if(!settingsIsString) {
 						var slick = thisFirst.slick;
 
 						//슬릭을 사용 중 일 때
@@ -82,7 +82,7 @@ try {
 					}
 
 					//객체일 때
-					if(!isString) {
+					if(!settingsIsString) {
 						//슬릭 적용 후 갱신
 						slick = $thisFirst.slick('getSlick');
 
