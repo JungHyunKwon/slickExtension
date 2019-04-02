@@ -227,11 +227,11 @@ try {
 						}).on('keydown.slickExtensions', function(event) {
 							//방향키를 눌렀을 때 멈춤 여부
 							if(slickOptions.pauseOnDirectionKeyPush === true) {
-								var tagName = this.tagName.toLowerCase(),
+								var tagName = this.tagName,
 									keyCode = event.keyCode || event.which;
 
 								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀을 때
-								if(slickOptions.accessibility === true && (tagName !== 'textarea' && tagName !== 'input' && tagName !== 'select') && (keyCode === 37 || keyCode === 39)) {
+								if(slickOptions.accessibility === true && (tagName !== 'TEXTAREA' && tagName !== 'INPUT' && tagName !== 'SELECT') && (keyCode === 37 || keyCode === 39)) {
 									pause();
 								}
 							}
