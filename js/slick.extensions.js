@@ -126,10 +126,12 @@ try {
 
 						//파괴되었을 때
 						$thisFirst.on('destroy.slickExtensions', function(event, slk) {
-							$(slickOptions.autoArrow).add(slickOptions.playArrow).add(slickOptions.pauseArrow).add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
-							$(slickOptions.current).text(slickOptions.currentText);
-							$(slickOptions.total).text(slickOptions.totalText);
-							$thisFirst.off('keydown.slickExtensions');
+							var $total = $(slickOptions.total);
+							
+							$(slickOptions.autoArrow).removeClass('slick-play slick-pause').add(slickOptions.playArrow).add(slickOptions.pauseArrow).removeClass('slick-arrow slick-hidden').removeAttr('tabindex aria-disabled').add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
+							$(slickOptions.current).text(slickOptions.currentText).add($total).removeClass('slick-text');
+							$total.text(slickOptions.totalText);
+							$thisFirst.off('afterChange.slickExtensions breakpoint.slickExtensions destroy.slickExtensions reInit.slickExtensions swipe.slickExtensions keydown.slickExtensions');
 
 						//슬라이드가 넘어갔을 때
 						}).on('afterChange.slickExtensions', function(event, slk, currentSlide) {
@@ -162,39 +164,54 @@ try {
 						//셋팅이 변경되었을 때, 분기가 변경되었을 때
 						}).on('reInit.slickExtensions breakpoint.slickExtensions', function(event, slk) {
 							var $prevArrow = $(slick.$prevArrow),
-								$nextArrow = $(slick.$nextArrow);
+								$nextArrow = $(slick.$nextArrow),
+								$autoArrow = $(slickOptions.autoArrow),
+								$playArrow = $(slickOptions.playArrow),
+								$pauseArrow = $(slickOptions.pauseArrow),
+								$autoAndPlayAndPauseArrow = $autoArrow.add($playArrow).add($pauseArrow),
+								$prevAndNextArrow = $prevArrow.add($nextArrow),
+								$arrow = $autoAndPlayAndPauseArrow.add($prevAndNextArrow);
 
+							//클래스가 있을 때
+							if($prevArrow.hasClass('slick-hidden')) {
+								$autoAndPlayAndPauseArrow.addClass('slick-hidden').attr({
+									tabindex : -1,
+									'aria-disabled' : true,
+								})
+							}
+							
+							//초기화
+							$arrow.off('click.slickExtensions');
+							$autoAndPlayAndPauseArrow.addClass('slick-arrow').off('click.slickExtensions');
+							
 							//자동 버튼
-							$(slickOptions.autoArrow).addClass('slick-arrow').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$autoArrow.on('click.slickExtensions', function(event) {
 								toggle();
 								event.preventDefault();
 							});
 							
 							//재생 버튼
-							$(slickOptions.playArrow).addClass('slick-arrow').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$playArrow.on('click.slickExtensions', function(event) {
 								play();
 								event.preventDefault();
 							});
 							
 							//일시정지 버튼
-							$(slickOptions.pauseArrow).addClass('slick-arrow').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+							$pauseArrow.on('click.slickExtensions', function(event) {
 								pause();
 								event.preventDefault();
 							});
 							
 							//이전, 재생 버튼
-							$prevArrow.add($nextArrow).css('display', '').off('click.slick click.slickExtensions').on('click.slickExtensions', function(event) {
+							$prevAndNextArrow.css('display', '').off('click.slick').on('click.slickExtensions', function(event) {
 								//네비게이션을 눌렀을 때 멈춤 여부
 								if(slickOptions.pauseOnArrowClick === true) {
 									pause();
 								}
 							});
 							
-							//현재 요소
-							$(slickOptions.current).addClass('slick-text');
-
-							//합계 요소
-							$(slickOptions.total).addClass('slick-text');
+							//현재, 합계 요소 클래스 추가
+							$(slickOptions.current).add(slickOptions.total).addClass('slick-text');
 
 							//이전 버튼
 							$prevArrow.on('click.slickExtensions', function(event) {
@@ -228,7 +245,7 @@ try {
 							//방향키를 눌렀을 때 멈춤 여부
 							if(slickOptions.pauseOnDirectionKeyPush === true) {
 								var tagName = this.tagName,
-									keyCode = event.keyCode || event.which;
+									keyCode = event.which || event.keyCode;
 
 								//접근성을 사용하면서 textarea, input, select가 아니면서 ← 또는 →를 눌렀을 때
 								if(slickOptions.accessibility === true && (tagName !== 'TEXTAREA' && tagName !== 'INPUT' && tagName !== 'SELECT') && (keyCode === 37 || keyCode === 39)) {
