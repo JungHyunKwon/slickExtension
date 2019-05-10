@@ -41,14 +41,13 @@ try {
 
 				//슬릭이 있으면서 요소가 있으면서 메서드 또는 세팅 요청일 때
 				if(_hasSlick && thisFirst && settings) {
-					var settingsIsString = typeof settings === 'string';
+					var settingsIsString = typeof settings === 'string',
+						slick = thisFirst.slick || {};
 
 					//객체일 때
 					if(!settingsIsString) {
-						var slick = thisFirst.slick;
-
 						//슬릭을 사용 중 일 때
-						if(slick) {
+						if(slick.unslicked) {
 							$thisFirst.slick('unslick');
 						}
 
@@ -74,11 +73,14 @@ try {
 						arguments[0] = settings;
 					}
 
-					//슬릭 적용
-					try {
-						result = _slick.apply($thisFirst, arguments);
-					}catch(e) {
-						//throw e;
+					//슬릭을 사용하면서 슬릭 해제를 요청하지 않았을 때
+					if(!(slick.unslicked && settings === 'unslick')) {
+						//슬릭 적용
+						try {
+							result = _slick.apply($thisFirst, arguments);
+						}catch(e) {
+							//throw e;
+						}
 					}
 
 					//객체일 때
