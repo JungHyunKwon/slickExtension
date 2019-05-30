@@ -130,7 +130,7 @@ try {
 						$firstOfThis.on('destroy.slickExtensions', function(event, slk) {
 							var $total = $(slickOptions.total);
 							
-							$(slickOptions.autoArrow).removeClass('slick-play slick-pause').add(slickOptions.playArrow).add(slickOptions.pauseArrow).removeClass('slick-arrow slick-hidden').removeAttr('tabindex aria-disabled').add(slickOptions.prevArrow).add(slickOptions.nextArrow).off('click.slickExtensions');
+							$(slickOptions.autoArrow).removeClass('slick-play slick-pause').add(slickOptions.playArrow).add(slickOptions.pauseArrow).removeClass('slick-arrow slick-hidden').removeAttr('tabindex aria-disabled').add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
 							$(slickOptions.current).text(slickOptions.currentText).add($total).removeClass('slick-text');
 							$total.text(slickOptions.totalText);
 							$firstOfThis.off('afterChange.slickExtensions breakpoint.slickExtensions destroy.slickExtensions reInit.slickExtensions swipe.slickExtensions keydown.slickExtensions');
@@ -138,9 +138,9 @@ try {
 						//슬라이드가 넘어갔을 때
 						}).on('afterChange.slickExtensions', function(event, slk, currentSlide) {
 							var customState = slickOptions.customState,
-								total = Math.ceil(slick.slideCount / slickOptions.slidesToShow) || slick.slideCount,
-								current = slick.currentSlide + 1;
-
+								total = slick.slideCount,
+								current = (slick.currentSlide || 0) + 1;
+							
 							//함수일 때
 							if(typeof customState === 'function') {
 								var result = customState({
@@ -165,8 +165,8 @@ try {
 
 						//셋팅이 변경되었을 때, 분기가 변경되었을 때
 						}).on('reInit.slickExtensions breakpoint.slickExtensions', function(event, slk) {
-							var $prevArrow = $(slickOptions.prevArrow),
-								$nextArrow = $(slickOptions.nextArrow),
+							var $prevArrow = $(slick.$prevArrow),
+								$nextArrow = $(slick.$nextArrow),
 								$autoArrow = $(slickOptions.autoArrow),
 								$playArrow = $(slickOptions.playArrow),
 								$pauseArrow = $(slickOptions.pauseArrow),
