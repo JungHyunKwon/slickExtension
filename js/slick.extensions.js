@@ -65,7 +65,6 @@ try {
 
 						//ie7, 8 브라우저를 대응하지 않을 때
 						if(_isLowIE && !settings.isRunOnLowIE) {
-							settings._responsive = settings.responsive;
 							settings.responsive = undefined;
 						}
 
