@@ -132,7 +132,7 @@ try {
 							$(slickOptions.autoArrow).removeClass('slick-play slick-pause').add(slickOptions.playArrow).add(slickOptions.pauseArrow).removeClass('slick-arrow slick-hidden').removeAttr('tabindex aria-disabled').add(slick.$prevArrow).add(slick.$nextArrow).off('click.slickExtensions');
 							$(slickOptions.current).text(slickOptions.currentText).add($total).removeClass('slick-text');
 							$total.text(slickOptions.totalText);
-							$firstOfThis.off('afterChange.slickExtensions breakpoint.slickExtensions destroy.slickExtensions reInit.slickExtensions swipe.slickExtensions keydown.slickExtensions');
+							$firstOfThis.off('.slickExtensions');
 
 						//슬라이드가 넘어갔을 때
 						}).on('afterChange.slickExtensions', function(event, slk, currentSlide) {
