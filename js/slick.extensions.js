@@ -272,4 +272,4 @@
 
 		return result;
 	};
-})(window.jQuery);
+})(jQuery);
