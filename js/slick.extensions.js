@@ -15,17 +15,17 @@
 	 * @since 2018-08-02
 	 * @param {object || string} options {
 	 *	   isRunOnLowIE : boolean,
-	 *	   autoArrow : element || jQuery,
-	 *	   playArrow : element || jQuery,
-	 *	   pauseArrow : element || jQuery,
+	 *	   autoArrow : object,
+	 *	   playArrow : object
+	 *	   pauseArrow : object,
 	 *	   pauseOnArrowClick : boolean,
 	 *	   pauseOnDotsClick : boolean,
 	 *	   pauseOnDirectionKeyPush : boolean,
 	 *	   pauseOnSwipe : boolean,
 	 *	   playText : string,
 	 *	   pauseText : string,
-	 *	   current : element || jQuery,
-	 *	   total : element || jQuery,
+	 *	   current : object,
+	 *	   total : object,
 	 *	   customState : function
 	 * }
 	 * @return {object}
