@@ -38,11 +38,11 @@
 
 		//요소가 있으면서 메서드 또는 세팅일 때
 		if(firstThis && settings) {
-			var settingsIsString = typeof settings === 'string',
+			var isString = typeof settings === 'string',
 				slick = firstThis.slick || {};
 
 			//문자가 아닐 때
-			if(!settingsIsString) {
+			if(!isString) {
 				//슬릭을 사용 중 일 때
 				if(slick.unslicked) {
 					$firstThis.slick('unslick');
@@ -80,7 +80,7 @@
 			}
 
 			//문자가 아닐 때
-			if(!settingsIsString) {
+			if(!isString) {
 				//슬릭 적용 후 갱신
 				slick = $firstThis.slick('getSlick');
 
