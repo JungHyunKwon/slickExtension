@@ -48,7 +48,7 @@
 					$firstThis.slick('unslick');
 				}
 
-				settings = _$extend(true, settings);
+				settings = _$extend(true, {}, settings);
 
 				settings.autoArrow = $(settings.autoArrow);
 				settings.playArrow = $(settings.playArrow);
