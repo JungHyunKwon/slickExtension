@@ -50,13 +50,16 @@
 
 				settings = _$extend(true, {}, settings);
 
+				var $total = $(settings.total),
+					$current = $(settings.current);
+
 				settings.autoArrow = $(settings.autoArrow);
 				settings.playArrow = $(settings.playArrow);
 				settings.pauseArrow = $(settings.pauseArrow);
-				settings.total = $(settings.total);
-				settings.totalText = settings.total.text();
-				settings.current = $(settings.current);
-				settings.currentText = settings.current.text();
+				settings.total = $total;
+				settings.totalText = $total.text();
+				settings.current = $current;
+				settings.currentText = $current.text();
 
 				//인터넷 익스플로러7, 8 브라우저를 대응하지 않을 때
 				if(_isLowIE && !settings.isRunOnLowIE) {
@@ -160,7 +163,7 @@
 						$prevAndNextArrow = $prevArrow.add($nextArrow);
 
 					//화살표를 사용할 때
-					if(slick.arrows) {
+					if(slickOptions.arrows) {
 						$autoAndPlayAndPauseArrow.addClass('slick-arrow').off('click.slickExtensions');
 
 						$autoArrow.on('click.slickExtensions', function(event) {
