@@ -159,16 +159,8 @@
 						$autoAndPlayAndPauseArrow = $autoArrow.add($playArrow).add($pauseArrow),
 						$prevAndNextArrow = $prevArrow.add($nextArrow);
 
-					//클래스가 있을 때
-					if($prevArrow.hasClass('slick-hidden')) {
-						$autoAndPlayAndPauseArrow.addClass('slick-hidden').attr({
-							tabindex : -1,
-							'aria-disabled' : true
-						})
-					}
-
-					//클래스가 있을 때
-					if($prevArrow.hasClass('slick-arrow')) {
+					//화살표를 사용할 때
+					if(slick.arrows) {
 						$autoAndPlayAndPauseArrow.addClass('slick-arrow').off('click.slickExtensions');
 
 						$autoArrow.on('click.slickExtensions', function(event) {
@@ -210,6 +202,11 @@
 							$firstThis.slick('slickNext');
 
 							event.preventDefault();
+						});
+					}else{
+						$autoAndPlayAndPauseArrow.addClass('slick-hidden').attr({
+							tabindex : -1,
+							'aria-disabled' : true
 						});
 					}
 
