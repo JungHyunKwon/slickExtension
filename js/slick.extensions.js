@@ -48,7 +48,7 @@
 					$firstThis.slick('unslick');
 				}
 
-				settings = _$extend({}, settings);
+				settings = _$extend(true, {}, settings);
 
 				var $total = $(settings.total),
 					$current = $(settings.current);
@@ -104,7 +104,6 @@
 					 */
 					pause = function() {
 						$firstThis.slick('slickPause');
-
 						$(slickOptions.autoArrow).addClass('slick-play').removeClass('slick-pause').text(slickOptions.playText);
 					},
 
