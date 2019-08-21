@@ -213,15 +213,19 @@
 						});
 					}
 
-					//도트 아이템을 사용할 때
-					if(slickOptions.dots === true) {
-						$(slick.$dots).css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
-							//도트를 사용하고 도트를 눌렀을 때 멈춤 여부
-							if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
-								pause();
-							}
-						});
-					}
+					$(slick.$dots).css('display', '').children('li').off('click.slickExtensions').on('click.slickExtensions', function(event) {
+						//도트를 사용하고 도트를 눌렀을 때 멈춤 여부
+						if(slickOptions.dots === true && slickOptions.pauseOnDotsClick === true) {
+							pause();
+						}
+					});
+
+					$(slick.$slides).off('click.slickExtensions').on('click.slickExtensions', function(event) {
+						//포커스 했을 때 선택을 사용할 때
+						if(slickOptions.focusOnSelect === true) {
+							pause();
+						}
+					});
 
 					$firstThis.triggerHandler('afterChange.slickExtensions');
 				}).on('swipe.slickExtensions', function(event, slickSettings, direction) {
