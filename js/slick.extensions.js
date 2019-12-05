@@ -207,8 +207,8 @@
 							event.preventDefault();
 						});
 
-					//슬라이드 개수보다 보이는 개수가 작을 때
-					}else if(slickOptions.slidesToShow < slick.$slides.length) {
+					//슬라이드 개수보다 보이는 개수가 클 때
+					}else if(slickOptions.slidesToShow > slick.$slides.length) {
 						$autoPlayPauseArrow.addClass('slick-hidden').attr({
 							tabindex : -1,
 							'aria-disabled' : true
