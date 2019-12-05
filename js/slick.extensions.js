@@ -162,8 +162,16 @@
 						$autoPlayPauseArrow = $autoArrow.add($playArrow).add($pauseArrow),
 						$prevNextArrow = $prevArrow.add($nextArrow);
 
-					//화살표를 사용할 때
-					if(slickOptions.arrows) {
+					//화살표를 사용하지 않을 때
+					if(!slickOptions.arrows) {
+						//슬라이드 개수보다 보이는 개수가 클 때
+						if(slickOptions.slidesToShow > slick.$slides.length) {
+							$autoPlayPauseArrow.addClass('slick-hidden').attr({
+								tabindex : -1,
+								'aria-disabled' : true
+							});
+						}
+					}else{
 						$autoPlayPauseArrow.addClass('slick-arrow').off('click.slickExtensions');
 
 						$autoArrow.on('click.slickExtensions', function(event) {
@@ -205,13 +213,6 @@
 							$firstThis.slick('slickNext');
 
 							event.preventDefault();
-						});
-
-					//슬라이드 개수보다 보이는 개수가 클 때
-					}else if(slickOptions.slidesToShow > slick.$slides.length) {
-						$autoPlayPauseArrow.addClass('slick-hidden').attr({
-							tabindex : -1,
-							'aria-disabled' : true
 						});
 					}
 
